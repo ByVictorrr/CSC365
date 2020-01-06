@@ -1,11 +1,5 @@
-JAVAC=javac
-sources = $(wildcard *.java)
-classes = $(sources:.java=.class)
+lab1:
+        javac *.java
 
-all: $(classes)
-
-clean :
-	rm -f *.class
-
-%.class : %.java
-	$(JAVAC) $<
+clean:
+        rm *.class

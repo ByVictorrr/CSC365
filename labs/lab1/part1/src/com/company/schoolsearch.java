@@ -2,18 +2,17 @@ package com.company;
 
 import java.util.*;
 
-public class Main {
+public class schoolsearch {
 
     public static void main(String[] args) {
+
         boolean isRunning = true;
         String line;
         List<Student> students = new ArrayList<>();
         OperationHelper helper = OperationHelper.getInstance(); // reads file and gets instance
 
-
         Scanner input;
         String command;
-
 
         try {
             input = new Scanner(System.in);
