@@ -1,6 +1,7 @@
 package com.company;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,39 +17,45 @@ public class Main {
 
         Scanner input;
         String command;
-        while(isRunning){
-            input = new Scanner(System.in);
-            command = input.nextLine();
-            helper.setCommand_list(Arrays.asList(command.split(" ")));
-            switch(helper.getCommand_list().get(0).charAt(0)){
-                case 'S':
-                    helper.command_S();
-                    break;
-                case 'T':
-                    helper.command_T();
-                    break;
-                case 'B':
-                    helper.command_B();
-                    break;
-                case 'G':
-                    helper.command_G();
-                    break;
-                case 'A':
-                    helper.command_A();
-                   break;
-                case 'I':
-                    helper.command_I();
-                    break;
-                case 'Q':
-                    if(helper.getCommand_list().get(0).equals("Quit") | helper.getCommand_list().get(0).equals("Q"))
-                        isRunning=false;
-                    break;
-                default:
-                    System.out.println("Enter a valid command");
-                    break;
-            }
 
-        }
+
+        try {
+            input = new Scanner(System.in);
+            while (isRunning){
+                //input = new Scanner(System.in);
+                command = input.nextLine();
+                helper.setCommand_list(Arrays.asList(command.split(" ")));
+                switch (helper.getCommand_list().get(0).charAt(0)) {
+                    case 'S':
+                        helper.command_S();
+                        break;
+                    case 'T':
+                        helper.command_T();
+                        break;
+                    case 'B':
+                        helper.command_B();
+                        break;
+                    case 'G':
+                        helper.command_G();
+                        break;
+                    case 'A':
+                        helper.command_A();
+                        break;
+                    case 'I':
+                        helper.command_I();
+                        break;
+                    case 'Q':
+                        if (helper.getCommand_list().get(0).equals("Quit") | helper.getCommand_list().get(0).equals("Q"))
+                            isRunning = false;
+                        break;
+                    default:
+                        System.out.println("Enter a valid command");
+                        break;
+                }
+            }}catch(Exception e){
+                e.printStackTrace();
+                System.exit(-1);
+            }
     }
 }
 class Student{
@@ -117,7 +124,7 @@ class OperationHelper {
             reader.close();
         }catch(Exception e) {
             System.err.println(e.getMessage());
-            return;
+            System.exit(-1);
         }
     }
 
@@ -144,7 +151,8 @@ class OperationHelper {
             } else if (command_list.size() == 2) {
                 String lastName = command_list.get(1);
                 students.stream().filter(s -> s.stLastName.equals(lastName)).forEach((s) -> {
-                    System.out.println(s.stLastName + "," + s.stFirstName);
+                    System.out.println(s.stLastName + "," + s.stFirstName + "," + s.grade +
+                            "," + s.classRoom + "," + s.tLastName + "," + s.tFirstName);
                 });
             }
         }
@@ -161,7 +169,7 @@ class OperationHelper {
         if ((command_list.get(0).equals("Bus:") | command_list.get(0).equals("B:")) && command_list.size() == 2) {
             int bus = Integer.parseInt(command_list.get(1));
             students.stream().filter(s -> s.busRoute == bus).forEach((s) -> {
-                System.out.println(s.stLastName + "," + s.stFirstName);
+                System.out.println(s.stFirstName+ "," + s.stLastName +","+s.grade);
             });
         }
     }
@@ -181,7 +189,7 @@ class OperationHelper {
         }else if (command_list.size() == 2 && isGrade) {
             int grade = Integer.parseInt(command_list.get(1));
             students.stream().filter(s -> s.grade == grade).forEach((s) -> {
-                System.out.println(s.stLastName + "," + s.stFirstName + "," + s.grade);
+                System.out.println(s.stLastName + "," + s.stFirstName );
             });
         }
     }
