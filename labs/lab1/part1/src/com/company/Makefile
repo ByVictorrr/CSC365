@@ -1,5 +1,4 @@
-lab1:
-        javac *.java
-
+schoolsearch:
+	javac *.java
 clean:
-        rm *.class
+	rm *.class

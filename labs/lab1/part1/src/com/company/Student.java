@@ -1,4 +1,3 @@
-package com.company;
 
 class Student{
     public String stLastName, stFirstName, tLastName, tFirstName;
