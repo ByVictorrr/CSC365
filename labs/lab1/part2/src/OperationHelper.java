@@ -28,7 +28,7 @@ class OperationHelper {
     private static void setStudents() {
         String line;
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("src/list.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("list.txt"));
             while((line = reader.readLine()) != null) {
                 List<String> fields = Arrays.asList(line.split(","));
                 // step 2 - fill list with student objects by reading file
@@ -48,7 +48,7 @@ class OperationHelper {
     private static void setmClassTeacher(){
         String line;
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("src/teachers.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("teachers.txt"));
             while((line = reader.readLine()) != null) {
                 List<String> fields = Arrays.asList(line.split(", "));
                 // step 2 - fill hash map
