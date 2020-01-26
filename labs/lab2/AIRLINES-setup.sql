@@ -1,14 +1,13 @@
--- Airlines.csv -- 
+-- airlines.csv -- 
 CREATE table `Airlines`(
 	`Id` INTEGER PRIMARY KEY,
 	`Airline` VARCHAR(200) NOT NULL,
-	`Abbreviation` VARCHAR(100) NOT NULL,
-	`Country` CHAR(3),
-	Unique (Airline)
+	`Abbreviation` VARCHAR(200) NOT NULL,
+	`Country` CHAR(3)
 );
 
 
--- Airports.csv --
+-- airports.csv --
 CREATE table `Airports`(
 	`City` VARCHAR(200) NOT NULL,
 	`AirportCode` CHAR(3) PRIMARY KEY,
@@ -17,7 +16,7 @@ CREATE table `Airports`(
 	`CountryAbbrev` CHAR(2) NOT NULL
 
 );
--- Flights.csv --
+-- flights.csv --
 CREATE table `Flights`(
 	`Airline` INTEGER NOT NULL,
 	`FlightNo` INTEGER NOT NULL,

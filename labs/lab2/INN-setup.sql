@@ -6,7 +6,8 @@ CREATE TABLE `Rooms`(
 	`beds` INTEGER NOT NULL,
 	`bedType` VARCHAR(10) NOT NULL,
 	`maxOccupancy` INTEGER NOT NULL,
-	`decor` VARCHAR(20) NOT NULL,
+	`basePrice` INTEGER NOT NULL,
+	`decor` VARCHAR(20) NOT NULL
 );
 -- Reservations.csv
 CREATE TABLE `Reservations`(
@@ -19,6 +20,6 @@ CREATE TABLE `Reservations`(
 	`firstName` VARCHAR(20) NOT NULL,
 	`Adults` INTEGER NOT NULL,
 	`Kids` INTEGER NOT NULL,
-	PRIMARY KEY (Room) REFERENCES Rooms(RoomId)
+	FOREIGN KEY (Room) REFERENCES Rooms(RoomId)
 );
 

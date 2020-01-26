@@ -1,0 +1,26 @@
+*****************************************************
+(a) Source the data
+URL: http://www.seanlahman.com/baseball-archive/statistics/
+Name: Sean Lahman
+*****************************************************
+(b) Description of Relations:
+
+Teams.csv:
+    Description: defines a baseball team, including statistics of 
+                 the team, Also including information. teamID is the primary key
+Batting.csv:
+    Description: includes batting information/statistics about a Player (playerId - primary key).
+                 This table references Teams by teamID (foreign key)
+Pitching.csv:
+    Description: includes pitching information/statistics about a Player (playerId - primary key)
+                 This table references Teams by teamID(foreign key)
+
+******************************************************
+(c) Mapping challenges:
+For the Pitching csv files, at first I only saw integer and string types.
+When I went in to fill the table it gave me an error because BAOpp is a float.
+
+(d)Three non-trival rquests that can be answered using the dataset you chose
+    (1) Return all playerId's such that a player's era was under 2.0
+    (2) Return all the teams such that they had a player who had 25 or more homers in a season
+    (3) Return all playerId's that pitched and hit during a year
