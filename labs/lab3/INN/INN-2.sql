@@ -8,15 +8,12 @@ CREATE TABLE `RoomService`(
     deliverDateTime TIMESTAMP NOT NULL,
     totalBill FLOAT,
     gratuity FLOAT,
-    reservationFirstName VARCHAR(100) NOT NULL
+    reservationFirstName VARCHAR(100) NOT NULL,
+    FOREIGN KEY (reservation) REFERENCES Reservations(Code)
+    ON DELETE RESTRICT
  );
-    --FOREIGN KEY (reservation) REFERENCES Reservations(Code)
 
 
-
---CREATE TRIGGER chk_reservation_time BEFORE INSERT(
--- checks the orderDateTime and deliverDatetime to see if it matches Reservation cHECKIN and out time
--- also deliver time > order time
 
 
 INSERT INTO `RoomService`(reservation, orderDateTime, deliverDateTime,totalBill,gratuity,reservationFirstName) 

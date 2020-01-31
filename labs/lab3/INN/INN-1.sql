@@ -3,6 +3,6 @@
 
 UPDATE Rooms
     SET basePrice = basePrice*.15+basePrice
-WHERE bedType = "King"  AND maxOccupancy = 4
-        OR basePrice <= 100;
+WHERE (bedType = "King"  AND maxOccupancy = 4)
+        OR basePrice <= 100);
         
