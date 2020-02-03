@@ -8,22 +8,22 @@
 
 -- ADD NEW COLUMNS
 ALTER TABLE Airports 
-ADD COLUMN latitude VARCHAR(10) NOT NULL,
-ADD COLUMN longitude VARCHAR(10) NOT NULL,
+ADD COLUMN latitude FLOAT NOT NULL,
+ADD COLUMN longitude FLOAT NOT NULL,
 ADD COLUMN altitude INTEGER NOT NULL;
 
 -- Populate based above
 UPDATE Airports
-    SET latitude="39◦ 50’ N", 
-        longitude="98◦ 35’ W",
+    SET latitude=39+(1/60)*50,  -- + is N
+        longitude=98+(35/60), -- + is W
         altitude=42
 WHERE AirportCode >= "AAA" AND 
       AirportCode <= "MZZ";
 
 -- Populate based above
 UPDATE Airports
-    SET latitude="36◦ 50’ S",
-        longitude="174◦ 45’ E",
+    SET latitude=-36+(1/60)*50; -- - is S
+        longitude=-174+(45/60), -- E is -
         altitude=70
 WHERE AirportCode >= "NAA" AND 
       AirportCode <= "ZZZ";
