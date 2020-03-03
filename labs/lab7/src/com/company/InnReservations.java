@@ -1,5 +1,6 @@
 package com.company;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -17,13 +18,15 @@ public class InnReservations {
 
         do {
 
-            switch (command = new Scanner(System.in).next()) {
-                case "FR1":
-                    executor.optionFR1();
-                    break;
-                case "FR2":
-                    break;
-            }
+                switch (command = new Scanner(System.in).next()) {
+                    case "FR1":
+                        executor.optionFR1();
+                        break;
+                    case "FR2":
+                        executor.optionFR2();
+                        break;
+
+                }
 
         }while(!command.equals("q") | !command.equals("quit"));
 

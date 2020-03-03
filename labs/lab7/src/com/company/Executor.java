@@ -63,9 +63,6 @@ public class Executor {
 
     }
 
-    /**
-     *
-     */
     public void optionFR2(){
 
         final int max_occ  = getMaxOccupancy();
@@ -81,32 +78,49 @@ public class Executor {
         );
 
         HashMap<String, String> field_values = getFields(fields);
+        ResultSet rs;
+        int reservation;
         // step -1 - if user typed in "c" then return to main menu
         if(field_values==null){
             return;
         }
-        // step 0 - build and then return the query of rooms
-        preparedStatement = connectionAdapter.getConnection().prepareStatement("" +
-                "")
+        /* Consider adults+children <= max_room_cap  and dates don't overlap with another res*/
+        if (max_occ < Integer.getInteger(field_values.get("Number Of Children")) +
+                Integer.getInteger(field_values.get("Number Of Adults"))){
+            System.out.println("No Suitable rooms are available");
+        }
 
-
-        // step 1 - use fields to output the available rooms
+        try {
+            // step 0 - build and then return the query of rooms
+            preparedStatement = connectionAdapter.getConnection().prepareStatement("" +
+                    "");
+            // step 1 - use fields to output the available rooms
+            rs = preparedStatement.executeQuery();
+            printResultSet(rs);
             // Case 1.1 - if no matches are found then output 5 suggested possibilities for different rooms or dates
-
-            /* These 5 rooms should be chosen based on similarity to desired reservation
-            *  Similarity = nearby dates and with similar features decor ect.
-            */
-
-            /* Consider adults+children <= max_room_cap  and dates don't overlap with another res*/
-            if (max_occ < Integer.getInteger(field_values.get("Number Of Children")) +
-                    Integer.getInteger(field_values.get("Number Of Adults"))){
-                    System.out.println("No Suitable rooms are available");
+            if(rs.getMetaData().getColumnCount() == 0){
+                /* These 5 rooms should be chosen based on similarity to desired reservation
+                 *  Similarity = nearby dates and with similar features decor ect.
+                 */
+                // give suggestions
             }
 
-        // step 2 - option to input booking number(ROOM CODE) of one of those rooms
+            // step 2 - option to input booking number(ROOM CODE) of one of those rooms
+
+            /*TODO : assuming input of booking and got room*/
+            field_values.clear();
+            String room;
+            // output this to the user
+             List<String> confirm = new ArrayList<>(fields);
+             confirm.add("Total Cost");
+             // combine the two into a list
 
 
 
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
 
 
     }

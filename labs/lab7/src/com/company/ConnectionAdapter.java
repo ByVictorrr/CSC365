@@ -12,6 +12,7 @@ public class ConnectionAdapter {
     private static Connection connection;
 
 
+
     private ConnectionAdapter(){
         try {
             connection = DriverManager.getConnection(JDBC_URL, DB_USERNAME, DB_PASSWORD);
