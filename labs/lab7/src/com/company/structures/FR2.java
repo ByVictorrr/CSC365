@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class FR2{
+public class FR2 extends FR{
     public static final int LAST_NAME=0;
     public static final int FIRST_NAME=1;
     public static final int ROOM_CODE=2;

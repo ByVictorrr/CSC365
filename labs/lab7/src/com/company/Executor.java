@@ -1,7 +1,10 @@
 package com.company;
 
+import com.company.structures.FR;
 import com.company.structures.FR2;
+import com.company.structures.FR3;
 import com.company.validators.FR2Validator;
+import com.company.validators.FR3Validator;
 import com.company.validators.Validator;
 
 import java.io.File;
@@ -142,7 +145,7 @@ public class Executor {
                 rs = preparedStatement.executeQuery();
             }
             System.out.println("Choose number below to book (c - cancel and go back to the main menu)");
-            Map<Integer,FR2> res = getReservations(rs);
+            Map<Integer,FR> res = getReservations(rs , new FR2());
            // step 2 - option to input booking number(ROOM CODE) of one of those rooms
            System.out.println("Please enter the booking number to order");
            res.forEach((k,v)->System.out.println(k + " " + v));
@@ -168,8 +171,7 @@ public class Executor {
                // cancel reservation if not y or Y
                 return;
            }
-
-           // TODO update the database with their reservations
+           // Insert into db
            preparedStatement= queryPreparer.insertFR2(pickedRes, NEXT_RES_CODE);
 
            int i = preparedStatement.executeUpdate();
@@ -178,8 +180,54 @@ public class Executor {
             e.printStackTrace();
         }
 
+    }
+
+    public void optionFR3(){
+        List<String> fields = Arrays.asList(
+                "CODE",
+                "First Name",
+                "Last Name",
+                "Begin date",
+                "End date",
+                "Number of adults",
+                "Number of children"
+
+        );
+        // allow users to change their reservations make sure they dont interere with others
+        Map<String, String> field_values ;
+
+        try{
+            // step 1 - get existing reservation
+            System.out.println("Enter a reservation code");
+
+            // in here validate a correct reservation
+            field_values = getFields(fields, new FR3Validator());
+            // step 2 - find it then update it according to next getFields
+            preparedStatement = queryPreparer.selectFR3(field_values.get(fields.get(FR3.RES_CODE)));
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            Map<Integer, FR> res = getReservations(resultSet, new FR3());
+            FR3 data = (FR3)res.get(0);
+
+            // if cant extend reservation
+            if(data.getDiff() + data.getCheckOut() < field_values.get(fields.get(FR3.END_STAY)){
+                System.out.println("Sorry we cant extend your reservation");
+                return;
+                // if cant add more ppl to room
+            }else if(data.getAdults()+data.getKids() < field_values.get(fields.get(FR3.ADULTS)) + field_values.get(FR3.KIDS)){
+                System.out.println("Sorry we cant add more people to your reservation");
+                return;
+            }
+            // else we can add more to the reservation
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
 
     }
+
 
 
     /**
@@ -215,15 +263,20 @@ public class Executor {
     }
 
 
-    private Map<Integer, FR2> getReservations(ResultSet rs) throws Exception{
+    private Map<Integer, FR> getReservations(ResultSet rs, FR instance) throws Exception{
         ResultSetMetaData rsmd = rs.getMetaData();
         int col_num = rsmd.getColumnCount();
-        Map<Integer, FR2> res = new HashMap<>();
+        Map<Integer, FR> res = new HashMap<>();
         int id=0;
 
         while (rs.next()){
             StringBuilder values = new StringBuilder();
-            FR2 f = new FR2();
+            FR f = null;
+            if(instance instanceof FR2){
+                f = new FR2();
+            }else if(instance instanceof FR3){
+                f = new FR3();
+            }
             for (int i=1; i <= col_num; i++){
                 f.setField(rsmd.getColumnName(i), rs.getString(i));
             }

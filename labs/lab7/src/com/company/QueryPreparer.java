@@ -119,6 +119,17 @@ public class QueryPreparer {
         return preparedStatement;
     }
 
+    public PreparedStatement selectFR3(String RES_CODE)
+                throws  Exception
+    {
+
+        final String FR3_FOLDER = "FR3";
+        String query;
+        query = new String(Files.readAllBytes(Paths.get(BASE_DIR+"/"+FR3_FOLDER + "/"+"FR3_RES_CODE.sql")));
+        PreparedStatement statement = connectionAdapter.getConnection().prepareStatement(query);
+        statement.setString(1, RES_CODE);
+        return statement;
+    }
     /**
      * @return - the max occupancy of all rooms in the INN
      *
