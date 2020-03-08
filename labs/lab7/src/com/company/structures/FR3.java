@@ -1,17 +1,17 @@
 package com.company.structures;
 
 public class FR3 extends FR{
-    public static final int RES_CODE = 0;
-    public static final int FIRST_NAME = 1;
-    public static final int LAST_NAME = 2;
-    public static final int BEGIN_STAY = 3;
-    public static final int END_STAY = 4;
-    public static final int ADULTS = 5;
-    public static final int KIDS = 6;
+    public static final int FIRST_NAME = 0;
+    public static final int LAST_NAME = 1;
+    public static final int BEGIN_STAY = 2;
+    public static final int END_STAY = 3;
+    public static final int ADULTS = 4;
+    public static final int KIDS = 5;
 
 
     private int diff, Adults, Kids;
     private String CheckOut, CheckIn;
+    private double basePrice;
     public void setField(String ColumnName, String value){
         switch (ColumnName){
             case "diff":
@@ -26,6 +26,8 @@ public class FR3 extends FR{
             case "Kids":
                 this.Kids = Integer.parseInt(value);
                 break;
+            case "basePrice":
+                this.basePrice=Double.parseDouble(value);
         }
     }
 
@@ -47,5 +49,9 @@ public class FR3 extends FR{
 
     public String getCheckOut() {
         return CheckOut;
+    }
+
+    public double getBasePrice() {
+        return basePrice;
     }
 }

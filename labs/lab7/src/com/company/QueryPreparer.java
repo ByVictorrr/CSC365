@@ -1,6 +1,10 @@
 package com.company;
 
+import com.company.structures.DateFactory;
+import com.company.structures.FR;
 import com.company.structures.FR2;
+import com.company.structures.FR3;
+import com.company.utilities.Pair;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -9,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.company.structures.FR2.*;
 
@@ -119,7 +124,7 @@ public class QueryPreparer {
         return preparedStatement;
     }
 
-    public PreparedStatement selectFR3(String RES_CODE)
+    public PreparedStatement selectFR3(int RES_CODE)
                 throws  Exception
     {
 
@@ -127,10 +132,43 @@ public class QueryPreparer {
         String query;
         query = new String(Files.readAllBytes(Paths.get(BASE_DIR+"/"+FR3_FOLDER + "/"+"FR3_RES_CODE.sql")));
         PreparedStatement statement = connectionAdapter.getConnection().prepareStatement(query);
-        statement.setString(1, RES_CODE);
+        statement.setInt(1, RES_CODE);
         return statement;
     }
+
+    public PreparedStatement updateFR3(Map<String, String> fieldValues, List<String> fields, double basePrice, int RES_CODE)
+            throws Exception
+    {
+        PreparedStatement statement = ConnectionAdapter.getInstance().getConnection().prepareStatement(
+                "UPDATE lab7_reservations " +
+                        "SET"  +
+                        "FirstName = ?," +
+                        "LastName = ?," +
+                        "CheckIn = ?,"+
+                        "Checkout = ?,"+
+                        "Kids = ?,"+
+                        "Adults = ?,"+
+                        "Rate = ? " +
+                        "WHERE CODE = ?;"
+                );
+        String CheckIn = fieldValues.get(fields.get(FR3.BEGIN_STAY));
+        String CheckOut = fieldValues.get(fields.get(FR3.END_STAY));
+        Pair<Integer, Integer> week_weekend_days = FR.split_days(DateFactory.addDays(0, CheckIn), DateFactory.addDays(0, CheckOut));
+
+        statement.setString(1, fieldValues.get(fields.get(FR3.FIRST_NAME)));
+        statement.setString(2, fieldValues.get(fields.get(FR3.LAST_NAME)));
+        statement.setString(3, CheckIn);
+        statement.setString(4, CheckOut);
+        statement.setInt(5, Integer.parseInt(fieldValues.get(fields.get(FR3.KIDS))));
+        statement.setInt(6, Integer.parseInt(fieldValues.get(fields.get(FR3.ADULTS))));
+        statement.setDouble(7, (basePrice*week_weekend_days.getValue() + basePrice*1.1*week_weekend_days.getKey())*1.18);
+        statement.setInt(8, RES_CODE);
+        return statement;
+
+    }
+
     /**
+     *
      * @return - the max occupancy of all rooms in the INN
      *
      */

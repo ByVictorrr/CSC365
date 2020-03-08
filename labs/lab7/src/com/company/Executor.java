@@ -1,13 +1,16 @@
 package com.company;
 
+import com.company.structures.DateFactory;
 import com.company.structures.FR;
 import com.company.structures.FR2;
 import com.company.structures.FR3;
 import com.company.validators.FR2Validator;
 import com.company.validators.FR3Validator;
 import com.company.validators.Validator;
+import com.sun.org.apache.xalan.internal.xsltc.dom.SAXImpl;
 
 import java.io.File;
+import java.net.SocketImpl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -160,7 +163,7 @@ public class Executor {
                 }
                 System.out.println("Please enter a valid number");
             }
-            FR2 pickedRes = res.get(Integer.parseInt(option));
+            FR2 pickedRes = (FR2)res.get(Integer.parseInt(option));
             pickedRes.setFirstName(field_values.get(fields.get(FR2.FIRST_NAME)));
             pickedRes.setLastName(field_values.get(fields.get(FR2.LAST_NAME)));
 
@@ -184,7 +187,6 @@ public class Executor {
 
     public void optionFR3(){
         List<String> fields = Arrays.asList(
-                "CODE",
                 "First Name",
                 "Last Name",
                 "Begin date",
@@ -195,31 +197,51 @@ public class Executor {
         );
         // allow users to change their reservations make sure they dont interere with others
         Map<String, String> field_values ;
+        FR3Validator validator = new FR3Validator();
 
         try{
             // step 1 - get existing reservation
-            System.out.println("Enter a reservation code");
+            String RES_CODE = "";
+            ResultSet resultSet=null;
+            while(isMyResultSetEmpty(resultSet)){
 
-            // in here validate a correct reservation
-            field_values = getFields(fields, new FR3Validator());
-            // step 2 - find it then update it according to next getFields
-            preparedStatement = queryPreparer.selectFR3(field_values.get(fields.get(FR3.RES_CODE)));
-            ResultSet resultSet = preparedStatement.executeQuery();
+                System.out.println("Enter a reservation code");
+                if(!(RES_CODE=new Scanner(System.in).next()).matches("\\d+") || Integer.parseInt(RES_CODE) > NEXT_RES_CODE){
+                    System.out.println("enter a valid res code");
+                    continue;
+                }
+                preparedStatement = queryPreparer.selectFR3(Integer.parseInt(RES_CODE));
+                resultSet = preparedStatement.executeQuery();
+            }
 
             Map<Integer, FR> res = getReservations(resultSet, new FR3());
             FR3 data = (FR3)res.get(0);
+            validator.setFr3(data);
 
+
+            // step 2 - read in values
+            field_values = getFields(fields, validator);
+            // step 2 - find it then update it according to next getFields
+
+
+            Date availCheckOut  = DateFactory.addDays(data.getDiff(),data.getCheckOut());
+            Date wantedCheckOut = DateFactory.addDays(0, field_values.get(fields.get(FR3.END_STAY)));
+
+
+            String num=field_values.get(fields.get(FR3.ADULTS));
             // if cant extend reservation
-            if(data.getDiff() + data.getCheckOut() < field_values.get(fields.get(FR3.END_STAY)){
+            if(availCheckOut.compareTo(wantedCheckOut) < -1){
                 System.out.println("Sorry we cant extend your reservation");
                 return;
                 // if cant add more ppl to room
-            }else if(data.getAdults()+data.getKids() < field_values.get(fields.get(FR3.ADULTS)) + field_values.get(FR3.KIDS)){
+            }else if(data.getAdults()+data.getKids() < Integer.parseInt(field_values.get(fields.get(FR3.ADULTS))) + Integer.parseInt(field_values.get(fields.get(FR3.KIDS)))){
                 System.out.println("Sorry we cant add more people to your reservation");
                 return;
             }
             // else we can add more to the reservation
 
+            PreparedStatement statement = queryPreparer.updateFR3(field_values, fields, data.getBasePrice(), Integer.parseInt(RES_CODE));
+            int i = statement.executeUpdate();
 
         }catch (Exception e){
             e.printStackTrace();
@@ -244,12 +266,12 @@ public class Executor {
         validator.setFields(field_names);
         validator.setFieldsValues(fields);
         String value;
+        Scanner scanner;
 
-       Scanner scanner = new Scanner(file);
-        while(counter < field_names.size() && scanner.hasNextLine()) {
+        while(counter < field_names.size()){
             System.out.println("input " + field_names.get(counter)
                     + "(c - return to main menu): ");
-            if((value = scanner.next()).equals( "c")){
+            if((value = new Scanner(System.in).next()).equals( "c")){
                 return null;
             }
             // check to see if a field is valid
@@ -268,9 +290,7 @@ public class Executor {
         int col_num = rsmd.getColumnCount();
         Map<Integer, FR> res = new HashMap<>();
         int id=0;
-
         while (rs.next()){
-            StringBuilder values = new StringBuilder();
             FR f = null;
             if(instance instanceof FR2){
                 f = new FR2();
@@ -310,6 +330,9 @@ public class Executor {
 
 
     public static boolean isMyResultSetEmpty(ResultSet rs) throws SQLException {
+            if(rs == null){
+                return true;
+            }
         return (!rs.isBeforeFirst() && rs.getRow() == 0);
     }
     private static long daysBetween(Date one, Date two) {

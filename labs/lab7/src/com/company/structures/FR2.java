@@ -53,10 +53,7 @@ public class FR2 extends FR{
                 break;
             case "Checkout":
                 this.CheckIn= sdf.parse(value);
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(this.CheckIn);
-                calendar.add(Calendar.DAY_OF_MONTH, res_days);
-                this.CheckOut = calendar.getTime();
+                this.CheckOut = DateFactory.addDays(res_days, value);
                 break;
             case "Adults":
                 this.Adults=Integer.parseInt(value);
@@ -156,27 +153,6 @@ public class FR2 extends FR{
     }
     // .get(0) = is the num weekdays
     // .get(1) = is the num weekend days
-    private Pair<Integer, Integer> split_days(Date start_d, Date end_d){
 
-        Integer num_weekDays=0, num_weekendsDays=0;
-        Calendar start = Calendar.getInstance();
-        start.setTime(start_d);
-        Calendar end = Calendar.getInstance();
-        end.setTime(end_d);
-
-        while(!start.after(end)){
-            int day = start.get(Calendar.DAY_OF_WEEK);
-            // to determine if workday
-            if ((day != Calendar.SATURDAY) && (day != Calendar.SUNDAY)){
-               num_weekDays++;
-            }else{
-                num_weekendsDays++;
-            }
-            // add one day to start
-            start.add(Calendar.DATE, 1);
-        }
-
-        return new Pair<>(num_weekDays, num_weekendsDays);
-    }
 }
 
