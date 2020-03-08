@@ -11,7 +11,7 @@ input_table AS(
     ? AS `adults`,
 	? AS `kids`
 )
-SELECT *
+SELECT rm.RoomName, RoomCode, diff, t.Checkout, basePrice, Adults, Kids, decor, bedType, basePrice
 FROM interval_table t, lab7_rooms rm
 WHERE rm.RoomCode=t.Room
 AND

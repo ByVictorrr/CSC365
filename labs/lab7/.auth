@@ -1,0 +1,4 @@
+export APP_JDBC_URL=jdbc:mysql://mysql.labthreesixfive.com/vdelapla
+export APP_JDBC_USER=vdelapla
+export APP_JDBC_PW=WinterTwenty20_365_016144878
+

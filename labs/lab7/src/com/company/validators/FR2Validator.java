@@ -22,13 +22,14 @@ public class FR2Validator implements Validator{
 
         switch (index){
             case FR2.ROOM_CODE:
-                if(!Executor.ROOM_CODES.contains(value)) {
+                if(!Executor.ROOM_CODES.contains(value) && !value.equals("ANY")) {
                     System.out.println("No such room code found!");
                     return false;
                 }
                 break;
             case FR2.BED:
-                if(!Executor.BED_TYPES.contains(value)) {
+
+                if(!Executor.BED_TYPES.contains(value) && !value.equals("ANY")) {
                     System.out.println("No such bed type found!");
                     return false;
                 }

@@ -4,10 +4,12 @@ import com.company.structures.FR2;
 import com.company.validators.FR2Validator;
 import com.company.validators.Validator;
 
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Executor {
@@ -83,7 +85,7 @@ public class Executor {
     public void optionFR1(){
         try {
             ResultSet resultSet = queryPreparer.FR1().executeQuery();
-            getReservationAndPrint(resultSet);
+            printResultSet(resultSet);
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -110,8 +112,11 @@ public class Executor {
            if((field_values=getFields(fields, new FR2Validator()))==null){
                return;
            }
+           Date in = new SimpleDateFormat("yyyy-MM-dd").parse(field_values.get(fields.get(FR2.BEGIN_STAY)));
+           Date out = new SimpleDateFormat("yyyy-MM-dd").parse(field_values.get(fields.get(FR2.END_STAY)));
+           FR2.setRes_days((int)daysBetween(out,in));
             // step 2 - build and then return the query of rooms
-            preparedStatement = queryPreparer.FR2(
+            preparedStatement = queryPreparer.selectFR2(
                     field_values.get(fields.get(FR2.BED)),
                     field_values.get(fields.get(FR2.ROOM_CODE)),
                     field_values,
@@ -128,31 +133,46 @@ public class Executor {
                  *  Similarity = nearby dates and with similar features decor ect.
                  */
                 // give suggestions
-                preparedStatement = queryPreparer.FR2(
+                preparedStatement = queryPreparer.selectFR2(
                                 "ANY",
                               "ANY",
                                         field_values,
                                         fields
                 );
-                // give close dates
-
-
                 rs = preparedStatement.executeQuery();
             }
-
-
-           List<FR2> res = getReservationAndPrint(rs);
+            System.out.println("Choose number below to book (c - cancel and go back to the main menu)");
+            Map<Integer,FR2> res = getReservations(rs);
            // step 2 - option to input booking number(ROOM CODE) of one of those rooms
-           System.out.println("Please enter the booking number in order");
+           System.out.println("Please enter the booking number to order");
+           res.forEach((k,v)->System.out.println(k + " " + v));
             // show the returned list in of numbered options
-            field_values.clear();
-            String room;
-            // output this to the user
-             List<String> confirm = new ArrayList<>(fields);
-             confirm.add("Total Cost");
-             // combine the two into a list
+            String option, confirm;
+            while(!(option = new Scanner(System.in).next()).matches("\\d+") ||
+                    !res.keySet().contains(Integer.parseInt(option))
+            ){
+                // go back to main menu
+                if(option.equals("c")){
+                    return;
+                }
+                System.out.println("Please enter a valid number");
+            }
+            FR2 pickedRes = res.get(Integer.parseInt(option));
+            pickedRes.setFirstName(field_values.get(fields.get(FR2.FIRST_NAME)));
+            pickedRes.setLastName(field_values.get(fields.get(FR2.LAST_NAME)));
 
+           System.out.println(pickedRes.PickedToString());
 
+           System.out.println("Y/N to to confirm reservation");
+           if(!((confirm=new Scanner(System.in).next()).matches("Y")) && !(confirm.matches("y"))){
+               // cancel reservation if not y or Y
+                return;
+           }
+
+           // TODO update the database with their reservations
+           preparedStatement= queryPreparer.insertFR2(pickedRes, NEXT_RES_CODE);
+
+           int i = preparedStatement.executeUpdate();
            NEXT_RES_CODE++;
         }catch (Exception e){
             e.printStackTrace();
@@ -170,16 +190,18 @@ public class Executor {
     private HashMap<String, String> getFields(List<String> field_names, Validator validator)
         throws Exception
     {
+        File file = new File("/home/victord/CSC365/labs/lab7/tests/FR2");
         int counter=0;
         final HashMap<String, String> fields = new HashMap<>(field_names.size());
         validator.setFields(field_names);
         validator.setFieldsValues(fields);
         String value;
 
-        while(counter < field_names.size()) {
+       Scanner scanner = new Scanner(file);
+        while(counter < field_names.size() && scanner.hasNextLine()) {
             System.out.println("input " + field_names.get(counter)
                     + "(c - return to main menu): ");
-            if((value = new Scanner(System.in).next()).equals( "c")){
+            if((value = scanner.next()).equals( "c")){
                 return null;
             }
             // check to see if a field is valid
@@ -193,39 +215,55 @@ public class Executor {
     }
 
 
-    private List<FR2> getReservationAndPrint(ResultSet rs) throws Exception{
+    private Map<Integer, FR2> getReservations(ResultSet rs) throws Exception{
         ResultSetMetaData rsmd = rs.getMetaData();
         int col_num = rsmd.getColumnCount();
-        boolean isFirst = true;
-        StringBuilder col_names = new StringBuilder();
-        int count=0;
-        List<FR2> fs = new ArrayList<>();
+        Map<Integer, FR2> res = new HashMap<>();
+        int id=0;
 
         while (rs.next()){
             StringBuilder values = new StringBuilder();
             FR2 f = new FR2();
             for (int i=1; i <= col_num; i++){
+                f.setField(rsmd.getColumnName(i), rs.getString(i));
+            }
+            res.put(id++, f);
+        }
+        return res;
+    }
+    private void printResultSet(ResultSet rs) throws SQLException{
+        ResultSetMetaData rsmd = rs.getMetaData();
+        int col_num = rsmd.getColumnCount();
+        boolean isFirst = true;
+        StringBuilder col_names = new StringBuilder();
+        while (rs.next()){
+            StringBuilder values = new StringBuilder();
+            for (int i=1; i <= col_num; i++){
                 if(i > 1){
-                 values.append(", ");
-                 if(isFirst) col_names.append(", ");
+                    values.append(", ");
+                    if(isFirst) col_names.append(", ");
                 }
                 if (isFirst) col_names.append(rsmd.getColumnName(i));
+
                 values.append(rs.getString(i));
-                f.setField(rsmd.getColumnName(i), rs.getString(i));
-                fs.add(f);
-          }
+            }
             if(isFirst){
                 System.out.println(col_names);
                 isFirst=false;
             }
-            System.out.println(f.Id + " - " + values.toString());
-            count++;
-       }
-        return fs;
+            System.out.println(values);
+        }
     }
+
 
     public static boolean isMyResultSetEmpty(ResultSet rs) throws SQLException {
         return (!rs.isBeforeFirst() && rs.getRow() == 0);
     }
+    private static long daysBetween(Date one, Date two) {
+        long difference =  (one.getTime()-two.getTime())/86400000;
+        return Math.abs(difference);
+    }
+
+
 }
 

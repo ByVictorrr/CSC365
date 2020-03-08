@@ -1,8 +1,13 @@
 package com.company.structures;
 
+import com.company.utilities.Pair;
+
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class FR2{
     public static final int LAST_NAME=0;
@@ -14,19 +19,26 @@ public class FR2{
     public static final int ADULTS=6;
     public static final int KIDS=7;
 
-    public static Integer count=0;
 
-    public Integer Id;
+    private static Integer res_days;
     // For the actual object
-    private String RoomName, RoomCode, Decor;
+    private String RoomName, RoomCode, Decor, BedType;
     private Date CheckIn, CheckOut;
-    private Integer Adults, Kids, DayAvail;
-    private Double Rate;
+    private Integer Adults, Kids;
+    private Double basePrice;
+    private double Rate;
+
+    // set after getting above objects
+    private String FirstName, LastName;
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
 
     public FR2(){
-        Id=count++;
+    }
+
+    public static void setRes_days(Integer res_days) {
+        FR2.res_days = res_days;
     }
 
     public void setField(String ColumnName, String value)
@@ -36,17 +48,15 @@ public class FR2{
             case "RoomName":
                 this.RoomName=value;
                 break;
-            case "Room":
+            case "RoomCode":
                 this.RoomCode= value;
                 break;
-            case "CheckOut":
+            case "Checkout":
                 this.CheckIn= sdf.parse(value);
-                Calendar.getInstance().setTime(this.CheckIn);
-                Calendar.getInstance().add(Calendar.DAY_OF_MONTH, this.DayAvail);
-                this.CheckOut = sdf.parse(sdf.format(Calendar.getInstance().getTime()));
-                break;
-            case "days_avail":
-                this.DayAvail=Integer.parseInt(value);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(this.CheckIn);
+                calendar.add(Calendar.DAY_OF_MONTH, res_days);
+                this.CheckOut = calendar.getTime();
                 break;
             case "Adults":
                 this.Adults=Integer.parseInt(value);
@@ -54,22 +64,119 @@ public class FR2{
             case "Kids":
                 this.Kids=Integer.parseInt(value);
                 break;
-            case "Decor":
+            case "decor":
                 this.Decor=value;
                 break;
-            case "Rate":
-                this.Rate=Double.parseDouble(value);
+            case "basePrice":
+                this.basePrice=Double.parseDouble(value);
+                final Pair<Integer, Integer> days = split_days(CheckIn, CheckOut);
+                this.Rate = Math.round((basePrice*days.getKey() + Rate*days.getValue() * 1.1)*1.18*100)/100;
+                break;
+            case "bedType":
+                this.BedType=value;
+                break;
         }
 
     }
 
-    public String getCheckIn() {
-        Calendar.getInstance().setTime(this.CheckIn);
-        return sdf.format(Calendar.getInstance().getTime());
+    public void setFirstName(String firstName) {
+        FirstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        LastName = lastName;
+    }
+
+    public String getCheckIn(){
+        return sdf.format(CheckIn);
     }
     public String getCheckOut() {
-        Calendar.getInstance().setTime(this.CheckOut);
-        return sdf.format(Calendar.getInstance().getTime());
+        return sdf.format(CheckOut);
+    }
+
+
+
+    @Override
+    public String toString() {
+        return "FR2{" +
+                "RoomName='" + RoomName + '\'' +
+                ", RoomCode='" + RoomCode + '\'' +
+                ", Decor='" + Decor + '\'' +
+                ", BedType='" + BedType + '\'' +
+                ", CheckIn=" + getCheckIn() +
+                ", CheckOut=" + getCheckOut() +
+                ", Adults=" + Adults +
+                ", Kids=" + Kids +
+                ", Rate=" + Rate +
+                '}';
+    }
+
+    public String PickedToString() {
+        return  "FirstName='"  + FirstName + '\'' +
+                ", LastName='"  + LastName + '\'' +
+                ", RoomName='" + RoomName + '\'' +
+                ", RoomCode='" + RoomCode + '\'' +
+                ", CheckIn=" + CheckIn +
+                ", CheckOut=" + CheckOut +
+                ", Adults=" + Adults +
+                ", Kids=" + Kids +
+                ", total_rate=" + Rate +
+                '}';
+    }
+
+
+    public Double getRate() {
+        return Rate;
+    }
+
+    public Integer getKids() {
+        return Kids;
+    }
+    public  Integer getAdults(){
+        return Adults;
+    }
+
+    public String getFirstName() {
+        return FirstName;
+    }
+
+    public String getLastName() {
+        return LastName;
+    }
+
+    public String getDecor() {
+        return Decor;
+    }
+
+    public String getRoomCode() {
+        return RoomCode;
+    }
+    public String getBedType(){
+        return BedType;
+    }
+    // .get(0) = is the num weekdays
+    // .get(1) = is the num weekend days
+    private Pair<Integer, Integer> split_days(Date start_d, Date end_d){
+
+        Integer num_weekDays=0, num_weekendsDays=0;
+        Calendar start = Calendar.getInstance();
+        start.setTime(start_d);
+        Calendar end = Calendar.getInstance();
+        end.setTime(end_d);
+
+        while(!start.after(end)){
+            int day = start.get(Calendar.DAY_OF_WEEK);
+            // to determine if workday
+            if ((day != Calendar.SATURDAY) && (day != Calendar.SUNDAY)){
+               num_weekDays++;
+            }else{
+                num_weekendsDays++;
+            }
+            // add one day to start
+            start.add(Calendar.DATE, 1);
+        }
+
+        return new Pair<>(num_weekDays, num_weekendsDays);
     }
 }
 

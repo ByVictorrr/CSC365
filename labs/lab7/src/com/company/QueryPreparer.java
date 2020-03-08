@@ -1,7 +1,10 @@
 package com.company;
 
+import com.company.structures.FR2;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -37,7 +40,7 @@ public class QueryPreparer {
 
 
 
-    public PreparedStatement FR2(final String BED_TYPE, final String ROOM_TYPE,
+    public PreparedStatement selectFR2(final String BED_TYPE, final String ROOM_TYPE,
                                         HashMap<String, String > fields, final List<String> keys)
             throws  Exception
     {
@@ -93,6 +96,27 @@ public class QueryPreparer {
 
             return statement;
 
+    }
+    // data coming from user
+    public PreparedStatement insertFR2(FR2 res, int CODE_COUNT)
+            throws SQLException
+    {
+        PreparedStatement preparedStatement = ConnectionAdapter
+                .getInstance().getConnection().prepareStatement("INSERT INTO lab7_reservations" +
+                        "(CODE, Room, CheckIn, CheckOut, Rate, LastName, FirstName, Adults, Kids) VALUES"+
+                        "(?,?,?,?,?,?,?,?,?)") ;
+
+        preparedStatement.setInt(1, CODE_COUNT);
+        preparedStatement.setString(2, res.getRoomCode());
+        preparedStatement.setString(3,  res.getCheckIn());
+        preparedStatement.setString(4, res.getCheckOut());
+        preparedStatement.setDouble(5, res.getRate());
+        preparedStatement.setString(6, res.getLastName());
+        preparedStatement.setString(7, res.getFirstName());
+        preparedStatement.setInt(8, res.getAdults());
+        preparedStatement.setInt(9, res.getKids());
+
+        return preparedStatement;
     }
 
     /**
