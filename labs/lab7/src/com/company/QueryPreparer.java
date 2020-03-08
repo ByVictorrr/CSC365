@@ -141,8 +141,7 @@ public class QueryPreparer {
     {
         PreparedStatement statement = ConnectionAdapter.getInstance().getConnection().prepareStatement(
                 "UPDATE lab7_reservations " +
-                        "SET"  +
-                        "FirstName = ?," +
+                        "SET FirstName = ?," +
                         "LastName = ?," +
                         "CheckIn = ?,"+
                         "Checkout = ?,"+

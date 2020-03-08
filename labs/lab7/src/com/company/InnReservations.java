@@ -17,6 +17,7 @@ public class InnReservations {
         Executor executor = Executor.getInstance();
 
         do {
+            printMenu();
 
                 switch (command = new Scanner(System.in).next()) {
                     case "FR1":
@@ -34,6 +35,11 @@ public class InnReservations {
         }while(!command.equals("q") | !command.equals("quit"));
 
     }
+    private static void printMenu(){
+        System.out.println("Welcome to Victors Hotel reservation program");
+        System.out.println("Options: FR1, FR2, F3");
+    }
+
 
 
 }
