@@ -29,6 +29,9 @@ public class InnReservations {
                     case "FR3":
                         executor.optionFR3();
                         break;
+                    case "FR4:":
+                        executor.optionFR4();
+                        break;
 
                 }
 

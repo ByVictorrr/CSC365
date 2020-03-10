@@ -32,7 +32,6 @@ public class FR2 extends FR{
     private String FirstName, LastName;
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    private static final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
 
     public FR2(){
     }
@@ -153,6 +152,5 @@ public class FR2 extends FR{
     }
     // .get(0) = is the num weekdays
     // .get(1) = is the num weekend days
-
 }
 

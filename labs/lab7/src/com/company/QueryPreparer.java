@@ -165,7 +165,25 @@ public class QueryPreparer {
         return statement;
 
     }
+    public PreparedStatement selectFR4(int RES_CODE)
+            throws Exception
+    {
+        PreparedStatement statement = connectionAdapter.getConnection().prepareStatement(
+                "SELECT Firstname FROM lab7_reservations WHERE CODE = ?"
+        );
+        statement.setInt(1, RES_CODE);
+        return statement;
+    }
+    public PreparedStatement updateFR4(int RES_CODE)
+            throws Exception
+    {
 
+       PreparedStatement statement = connectionAdapter.getConnection().prepareStatement(
+               "DELETE FROM lab7_reservations WHERE CODE = ?"
+       );
+       statement.setInt(1, RES_CODE);
+       return statement;
+    }
     /**
      *
      * @return - the max occupancy of all rooms in the INN
