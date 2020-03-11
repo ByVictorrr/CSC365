@@ -1,13 +1,9 @@
-package com.company.structures;
+package com.company.reservations;
 
+import com.company.parsers.DateFactory;
 import com.company.utilities.Pair;
 
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 public class FR2 extends FR{
     public static final int LAST_NAME=0;
@@ -20,26 +16,25 @@ public class FR2 extends FR{
     public static final int KIDS=7;
 
 
-    private static Integer res_days;
-    // For the actual object
-    private String RoomName, RoomCode, Decor, BedType;
-    private Date CheckIn, CheckOut;
-    private Integer Adults, Kids;
-    private Double basePrice;
-    private double Rate;
-
     // set after getting above objects
     private String FirstName, LastName;
+    private Double basePrice;
 
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    private static int userTimeStay;
+    static public void  setUserTimeStay(int timeStay){FR2.userTimeStay = timeStay;}
 
-    public FR2(){
-    }
 
-    public static void setRes_days(Integer res_days) {
-        FR2.res_days = res_days;
-    }
-
+    /**
+     * Gives you the number of days between check in and checkout
+     * @return the number of days between checkout and check in
+     */
+    public long numDaysOfStay() { return DateFactory.daysBetween(this.CheckOut, this.CheckIn);}
+    /**
+     * Sets the objects fields given a returned sql query
+     * @param ColumnName - returned sql column name
+     * @param value - value of the sql returned column
+     * @throws Exception
+     */
     public void setField(String ColumnName, String value)
             throws Exception
     {
@@ -51,8 +46,7 @@ public class FR2 extends FR{
                 this.RoomCode= value;
                 break;
             case "Checkout":
-                this.CheckIn= sdf.parse(value);
-                this.CheckOut = DateFactory.addDays(res_days, value);
+                this.CheckIn=  DateFactory.StringToDate(value);
                 break;
             case "Adults":
                 this.Adults=Integer.parseInt(value);
@@ -65,15 +59,17 @@ public class FR2 extends FR{
                 break;
             case "basePrice":
                 this.basePrice=Double.parseDouble(value);
-                final Pair<Integer, Integer> days = split_days(CheckIn, CheckOut);
-                this.Rate = Math.round((basePrice*days.getKey() + Rate*days.getValue() * 1.1)*1.18*100)/100;
+                this.Rate = FR.totalRateOfStay(CheckIn, CheckOut, basePrice);
                 break;
             case "bedType":
                 this.BedType=value;
                 break;
+            case "diff":
+                this.CheckOut = DateFactory.addDays(userTimeStay, this.CheckIn);
         }
 
     }
+
 
     public void setFirstName(String firstName) {
         FirstName = firstName;
@@ -81,13 +77,6 @@ public class FR2 extends FR{
 
     public void setLastName(String lastName) {
         LastName = lastName;
-    }
-
-    public String getCheckIn(){
-        return sdf.format(CheckIn);
-    }
-    public String getCheckOut() {
-        return sdf.format(CheckOut);
     }
 
 
@@ -99,8 +88,8 @@ public class FR2 extends FR{
                 ", RoomCode='" + RoomCode + '\'' +
                 ", Decor='" + Decor + '\'' +
                 ", BedType='" + BedType + '\'' +
-                ", CheckIn=" + getCheckIn() +
-                ", CheckOut=" + getCheckOut() +
+                ", CheckIn=" + CheckIn +
+                ", CheckOut=" + CheckOut +
                 ", Adults=" + Adults +
                 ", Kids=" + Kids +
                 ", Rate=" + Rate +
@@ -121,16 +110,7 @@ public class FR2 extends FR{
     }
 
 
-    public Double getRate() {
-        return Rate;
-    }
 
-    public Integer getKids() {
-        return Kids;
-    }
-    public  Integer getAdults(){
-        return Adults;
-    }
 
     public String getFirstName() {
         return FirstName;
@@ -140,17 +120,5 @@ public class FR2 extends FR{
         return LastName;
     }
 
-    public String getDecor() {
-        return Decor;
-    }
-
-    public String getRoomCode() {
-        return RoomCode;
-    }
-    public String getBedType(){
-        return BedType;
-    }
-    // .get(0) = is the num weekdays
-    // .get(1) = is the num weekend days
 }
 

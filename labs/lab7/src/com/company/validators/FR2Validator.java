@@ -1,10 +1,9 @@
 package com.company.validators;
 
-import com.company.Executor;
-import com.company.structures.FR2;
-import com.sun.org.apache.xml.internal.resolver.readers.ExtendedXMLCatalogReader;
+import com.company.executors.Executor;
+import com.company.parsers.DateFactory;
+import com.company.reservations.FR2;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ public class FR2Validator implements Validator{
     public boolean valid(int index, String value)
         throws Exception
     {
-        final String DATE_FORMAT =  new String("([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))");
 
         switch (index){
             case FR2.ROOM_CODE:
@@ -28,7 +26,6 @@ public class FR2Validator implements Validator{
                 }
                 break;
             case FR2.BED:
-
                 if(!Executor.BED_TYPES.contains(value) && !value.equals("ANY")) {
                     System.out.println("No such bed type found!");
                     return false;
@@ -45,24 +42,24 @@ public class FR2Validator implements Validator{
                     System.out.println("Please enter in a valid date format for end stay");
                     return false;
                 }
-                Date end = new SimpleDateFormat("yyyy-MM-dd").parse(value);
-                Date start = new SimpleDateFormat("yyyy-MM-dd").parse(fieldsValues.get(fields.get(FR2.BEGIN_STAY)));
+                Date end = DateFactory.StringToDate(value);
+                Date start = DateFactory.StringToDate(fieldsValues.get(fields.get(FR2.BEGIN_STAY)));
                 if (end.compareTo(start) < 0) {
                     System.out.println("Enter a date later than start date");
                     return false;
                 }
                 break;
             case FR2.ADULTS:
-                if(!value.matches("\\d+")){
+                if(!value.matches(NUMBER_FORMAT) || Integer.parseInt(value) < 0){
                     System.out.println("Please enter in a valid integer for adults");
                     return false;
-                }else if(Executor.MAX_ADULTS+Executor.MAX_KIDS < Integer.parseInt(value) ){
+                }else if(Executor.MAX_ADULTS+Executor.MAX_KIDS < Integer.parseInt(value)){
                     System.out.println("Not enough room for all the adults");
                     return false;
                 }
                 break;
             case FR2.KIDS:
-                if(!value.matches("\\d+")){
+                if(!value.matches(NUMBER_FORMAT) || Integer.parseInt(value) <0){
                     System.out.println("Please enter in a valid integer for kids");
                     return false;
                 }else if(Integer.parseInt(fieldsValues.get(fields.get(FR2.ADULTS)))+ Integer.parseInt(value)

@@ -1,4 +1,6 @@
-package com.company.structures;
+package com.company.reservations;
+
+import com.company.parsers.DateFactory;
 
 public class FR3 extends FR{
     public static final int FIRST_NAME = 0;
@@ -9,16 +11,23 @@ public class FR3 extends FR{
     public static final int KIDS = 5;
 
 
-    private int diff, Adults, Kids;
-    private String CheckOut, CheckIn;
+    private int daysAvailableNextRes;
     private double basePrice;
-    public void setField(String ColumnName, String value){
+
+    /**
+     * Sets fields for a given returned sql query
+     * @param ColumnName - returned sql column name
+     * @param value - value of the sql returned column
+     */
+    public void setField(String ColumnName, String value)
+        throws Exception
+    {
         switch (ColumnName){
             case "diff":
-                this.diff = Integer.parseInt(value);
+                this.daysAvailableNextRes = Integer.parseInt(value);
                 break;
             case "Checkout":
-                this.CheckOut = value;
+                this.CheckOut = DateFactory.StringToDate(value);
                 break;
             case "Adults":
                 this.Adults = Integer.parseInt(value);
@@ -31,24 +40,8 @@ public class FR3 extends FR{
         }
     }
 
-    public int getAdults() {
-        return Adults;
-    }
-
-    public int getDiff() {
-        return diff;
-    }
-
-    public int getKids() {
-        return Kids;
-    }
-
-    public String getCheckIn() {
-        return CheckIn;
-    }
-
-    public String getCheckOut() {
-        return CheckOut;
+    public int getDaysAvailableNextRes() {
+        return daysAvailableNextRes;
     }
 
     public double getBasePrice() {

@@ -1,7 +1,7 @@
 WITH interval_table AS(
 SELECT *,
-        (SELECT MIN(DATEDIFF(CheckOut, curr.CheckIn)) FROM lab7_reservations
-		WHERE curr.Room=Room AND curr.CheckIn<= CheckOut AND curr.CODE <> CODE
+        (SELECT MIN(DATEDIFF(CheckIn, curr.CheckOut)) FROM lab7_reservations
+		WHERE curr.Room=Room AND curr.CheckOut<= Checkin AND curr.CODE <> CODE
 		) AS diff
     FROM lab7_reservations curr
 ),
@@ -13,7 +13,7 @@ input_table AS(
 	? AS `bed_type`,
 	? AS `room_type`
 )
-SELECT rm.RoomName, RoomCode, diff, t.Checkout, basePrice, Adults, Kids, decor, bedType, basePrice
+SELECT rm.RoomName, RoomCode, t.Checkout, diff, basePrice, Adults, Kids, decor, bedType, basePrice
 FROM interval_table t, lab7_rooms rm
 WHERE rm.RoomCode = t.Room
 AND
@@ -33,5 +33,5 @@ EXISTS(
 		AND i.bed_type = rm.bedType
 		AND i.room_type = rm.RoomCode
 )
-ORDER BY t.CheckOut DESC
+ORDER BY t.CheckIn
 LIMIT 5

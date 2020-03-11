@@ -1,14 +1,12 @@
 package com.company.validators;
 
-import com.company.Executor;
-import com.company.structures.FR2;
-import com.company.structures.FR3;
+import com.company.reservations.FR3;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import static com.company.structures.FR3.*;
+import static com.company.reservations.FR3.*;
 
 public class FR3Validator implements Validator{
     private List<String> fields;
@@ -16,7 +14,6 @@ public class FR3Validator implements Validator{
     private FR3 fr3;
 
     public boolean valid(int index, String value) throws Exception {
-        final String DATE_FORMAT =  new String("([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))");
         switch (index){
             case BEGIN_STAY:
                 if(!value.matches(DATE_FORMAT)){
@@ -37,7 +34,7 @@ public class FR3Validator implements Validator{
                 }
                 break;
             case ADULTS:
-                if(!value.matches("\\d+")){
+                if(!value.matches(NUMBER_FORMAT)){
                     System.out.println("Please enter in a valid integer for adults");
                     return false;
                 }else if(fr3.getAdults() < Integer.parseInt(value)){
@@ -46,7 +43,7 @@ public class FR3Validator implements Validator{
                 }
                 break;
             case KIDS:
-                if(!value.matches("\\d+")){
+                if(!value.matches(NUMBER_FORMAT)){
                     System.out.println("Please enter in a valid integer for kids");
                     return false;
                 }else if(fr3.getKids()+fr3.getAdults() < Integer.parseInt(fieldValues.get(fields.get(ADULTS))) + Integer.parseInt(value)){

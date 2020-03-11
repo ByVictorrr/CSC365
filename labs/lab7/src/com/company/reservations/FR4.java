@@ -1,4 +1,4 @@
-package com.company.structures;
+package com.company.reservations;
 
 public class FR4 extends FR{
     // this object store information to cancel a reservation
