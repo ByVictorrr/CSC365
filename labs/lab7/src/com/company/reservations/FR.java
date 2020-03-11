@@ -8,6 +8,7 @@ import java.util.Date;
 
 abstract public class FR {
 
+    protected String FirstName, LastName;
     protected String RoomName, RoomCode, Decor, BedType;
     protected Date CheckIn, CheckOut;
     protected Integer Adults, Kids;
@@ -97,6 +98,14 @@ abstract public class FR {
         return Rate;
     }
 
+    public String getLastName() {
+        return LastName;
+    }
+
+    public String getFirstName() {
+        return FirstName;
+    }
+
     public void setAdults(Integer adults) {
         Adults = adults;
     }
@@ -104,4 +113,15 @@ abstract public class FR {
     public void setKids(Integer kids) {
         Kids = kids;
     }
+
+    public void setFirstName(String firstName) {
+        FirstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        LastName = lastName;
+    }
+
+
+
 }

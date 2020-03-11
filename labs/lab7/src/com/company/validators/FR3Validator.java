@@ -16,13 +16,13 @@ public class FR3Validator implements Validator{
     public boolean valid(int index, String value) throws Exception {
         switch (index){
             case BEGIN_STAY:
-                if(!value.matches(DATE_FORMAT)){
+                if(!value.matches(DATE_FORMAT) && !value.equals("no")){
                    System.out.println("Enter a valid date for check in");
                    return false;
                 }
                 break;
             case END_STAY:
-                if(!value.matches(DATE_FORMAT)){
+                if(!value.matches(DATE_FORMAT) && !value.equals("no")){
                     System.out.println("Enter a valid date for end stay");
                     return false;
                 }
@@ -34,7 +34,7 @@ public class FR3Validator implements Validator{
                 }
                 break;
             case ADULTS:
-                if(!value.matches(NUMBER_FORMAT)){
+                if(!value.matches(NUMBER_FORMAT) && !value.equals("no")){
                     System.out.println("Please enter in a valid integer for adults");
                     return false;
                 }else if(fr3.getAdults() < Integer.parseInt(value)){
@@ -43,7 +43,7 @@ public class FR3Validator implements Validator{
                 }
                 break;
             case KIDS:
-                if(!value.matches(NUMBER_FORMAT)){
+                if(!value.matches(NUMBER_FORMAT) && !value.equals("no")){
                     System.out.println("Please enter in a valid integer for kids");
                     return false;
                 }else if(fr3.getKids()+fr3.getAdults() < Integer.parseInt(fieldValues.get(fields.get(ADULTS))) + Integer.parseInt(value)){

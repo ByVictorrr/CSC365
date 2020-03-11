@@ -37,6 +37,14 @@ public class FR3 extends FR{
                 break;
             case "basePrice":
                 this.basePrice=Double.parseDouble(value);
+            case "FirstName":
+                this.FirstName = value;
+                break;
+            case "LastName":
+                this.LastName = value;
+                break;
+            case "CheckIn":
+                this.CheckIn = DateFactory.StringToDate(value);
         }
     }
 

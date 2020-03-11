@@ -9,10 +9,10 @@ import com.company.validators.FR3Validator;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
+import static com.company.reservations.FR3.*;
+public class FR3Executor extends Executor {
 
-public class FR3Executor extends Executor{
-
-    public void execute(){
+    public void execute() {
 
         final FR3Preparer preparer = new FR3Preparer();
         final List<String> fields = Arrays.asList(
@@ -44,21 +44,22 @@ public class FR3Executor extends Executor{
                 resultSet = preparedStatement.executeQuery();
             }
 
+            // step 2 - set res object
             Map<Integer, FR> res = getReservations(resultSet, new FR3());
             FR3 data = (FR3) res.get(0);
             validator.setFr3(data);
 
-
-            // step 2 - read in values
+            // step 3 - read in values by the user
+            System.out.println("If you don't want change in one of the fields type: no");
             field_values = getFields(fields, validator);
-            // step 2 - find it then update it according to next getFields
+
+            // step 4 - got to accept [no] as no change
+            noChangeMap(field_values, fields, data);
 
 
             Date availCheckOut = DateFactory.addDays(data.getDaysAvailableNextRes(), data.getCheckOut());
-            Date wantedCheckOut = DateFactory.addDays(0, field_values.get(fields.get(FR3.END_STAY)));
+            Date wantedCheckOut = DateFactory.StringToDate(field_values.get(fields.get(FR3.END_STAY)));
 
-
-            String num = field_values.get(fields.get(FR3.ADULTS));
             // if cant extend reservation
             if (availCheckOut.compareTo(wantedCheckOut) < -1) {
                 System.out.println("Sorry we cant extend your reservation");
@@ -68,12 +69,41 @@ public class FR3Executor extends Executor{
                 System.out.println("Sorry we cant add more people to your reservation");
                 return;
             }
-            // else we can add more to the reservation
+            // else we can add more or shrink to the reservation
             PreparedStatement statement = preparer.updateFR3(field_values, fields, data.getBasePrice(), Integer.parseInt(RES_CODE));
             int i = statement.executeUpdate();
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Looks through the map for values of no and sets it to the old contents
+     * @param map
+     * @param fields
+     * @param data
+     */
+    private void noChangeMap(Map<String, String> map, final List<String> fields, FR3 data) {
+        for (String key : map.keySet()) {
+            String value = map.get(key);
+            if (value.equals("no")) {
+                if (key.equals(fields.get(FIRST_NAME))) {
+                    value = data.getFirstName();
+                } else if (key.equals(fields.get(LAST_NAME))) {
+                    value = data.getLastName();
+                } else if (key.equals(fields.get(BEGIN_STAY))) {
+                    value = DateFactory.DateToString(data.getCheckIn());
+                } else if (key.equals(fields.get(END_STAY))) {
+                    value = DateFactory.DateToString(data.getCheckOut());
+                } else if (key.equals(fields.get(ADULTS))) {
+                    value = Double.toString(data.getAdults());
+                } else {
+                    value = Double.toString(data.getKids());
+                }
+                map.put(key, value);
+            }
         }
 
     }

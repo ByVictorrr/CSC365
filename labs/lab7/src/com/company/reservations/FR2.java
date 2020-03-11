@@ -71,15 +71,6 @@ public class FR2 extends FR{
     }
 
 
-    public void setFirstName(String firstName) {
-        FirstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        LastName = lastName;
-    }
-
-
 
     @Override
     public String toString() {

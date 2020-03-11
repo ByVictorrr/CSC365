@@ -9,6 +9,7 @@ import com.company.utilities.Pair;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.PreparedStatement;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ public class FR3Preparer extends Preparer {
     public PreparedStatement updateFR3(Map<String, String> fieldValues, List<String> fields, double basePrice, int RES_CODE)
             throws Exception
     {
-        PreparedStatement statement = ConnectionAdapter.getConnection().prepareStatement(
+        final PreparedStatement statement = ConnectionAdapter.getConnection().prepareStatement(
                 "UPDATE lab7_reservations " +
                         "SET FirstName = ?," +
                         "LastName = ?," +
@@ -41,18 +42,16 @@ public class FR3Preparer extends Preparer {
                         "Rate = ? " +
                         "WHERE CODE = ?;"
         );
-        String CheckIn = fieldValues.get(fields.get(BEGIN_STAY));
-        String CheckOut = fieldValues.get(fields.get(END_STAY));
-
-        double rate = FR.totalRateOfStay(CheckIn, CheckOut, basePrice);
+        final Date CheckIn = DateFactory.StringToDate(fieldValues.get(fields.get(BEGIN_STAY)));
+        final Date CheckOut = DateFactory.StringToDate(fieldValues.get(fields.get(END_STAY)));
 
         statement.setString(1, fieldValues.get(fields.get(FIRST_NAME)));
         statement.setString(2, fieldValues.get(fields.get(LAST_NAME)));
-        statement.setString(3, CheckIn);
-        statement.setString(4, CheckOut);
+        statement.setDate(3, new java.sql.Date(CheckIn.getTime()));
+        statement.setDate(4, new java.sql.Date(CheckOut.getTime()));
         statement.setInt(5, Integer.parseInt(fieldValues.get(fields.get(KIDS))));
         statement.setInt(6, Integer.parseInt(fieldValues.get(fields.get(ADULTS))));
-        statement.setDouble(7, (basePrice*week_weekend_days.getValue() + basePrice*1.1*week_weekend_days.getKey())*1.18);
+        statement.setDouble(7, FR.totalRateOfStay(CheckIn, CheckOut, basePrice));
         statement.setInt(8, RES_CODE);
         return statement;
 

@@ -5,6 +5,6 @@ SELECT *,
 		) AS diff
     FROM lab7_reservations curr
 )
-SELECT diff, CheckOut, Adults, Kids, basePrice
+SELECT FirstName, LastName, diff, CheckOut, CheckIn, Adults, Kids, basePrice
 FROM interval_table t, lab7_rooms rm
 WHERE rm.RoomCode=t.Room AND CODE = ?
