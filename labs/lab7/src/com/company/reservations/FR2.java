@@ -71,7 +71,7 @@ public class FR2 extends FR{
 
     @Override
     public String toString() {
-        return "FR2{" +
+        return "1{" +
                 "RoomName='" + RoomName + '\'' +
                 ", RoomCode='" + RoomCode + '\'' +
                 ", Decor='" + Decor + '\'' +

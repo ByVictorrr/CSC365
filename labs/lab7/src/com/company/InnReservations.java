@@ -32,6 +32,8 @@ public class InnReservations {
                     case "FR5":
                         new FR5Executor().execute();
                         break;
+                    case "FR6":
+                        new FR6Executor().execute();
 
                 }
 

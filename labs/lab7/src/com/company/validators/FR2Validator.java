@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FR2Validator implements Validator{
-    /* Provides validation for FR2 */
+    /* Provides validation for 1 */
 
     private Map<String, String> fieldsValues;
     private List<String> fields;

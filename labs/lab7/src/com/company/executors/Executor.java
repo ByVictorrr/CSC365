@@ -104,6 +104,8 @@ abstract public class Executor {
                 f = new FR3();
             }else if(instance instanceof  FR4){
                 f = new FR4();
+            }else if(instance instanceof  FR6){
+                f= new FR6();
             }
             for (int i=1; i <= col_num; i++){
                 f.setField(rsmd.getColumnName(i), rs.getString(i));

@@ -1,19 +1,8 @@
 package com.company.preparers;
 
 import com.company.ConnectionAdapter;
-import com.company.parsers.DateFactory;
-import com.company.reservations.FR;
-import com.company.reservations.FR2;
-import com.company.reservations.FR3;
-import com.company.utilities.Pair;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 public class ConstantsPreparer extends Preparer{

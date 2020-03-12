@@ -6,15 +6,37 @@ import com.company.reservations.FR;
 import com.company.reservations.FR2;
 import com.company.validators.FR2Validator;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.company.reservations.FR2.*;
 
 public class FR2Executor extends Executor{
+
+   /*========================FOR TESTING ====================================*/
+    private final static List<String> TESTS;
+    private static int index = 0;
+    static {
+        List<String> _TESTS = new ArrayList<>();
+        String s = null;
+        try {
+            Process process = Runtime.getRuntime().exec("ls /home/victord/CSC365/labs/lab7/tests/FR2_tests/*");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    process.getInputStream()));
+            while ((s = reader.readLine()) != null) {
+                System.out.println("Script output: " + s);
+                _TESTS.add(s);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        TESTS= _TESTS;
+    }
+    /*========================================================================*/
+
 
     public void execute() {
 
@@ -35,7 +57,7 @@ public class FR2Executor extends Executor{
         ResultSet rs;
         try {
             // step 0 - if user typed in "c" then return to main menu
-            if ((field_values = getFields(fields, new FR2Validator(), "FR2")) == null) {
+            if ((field_values = getFields(fields, new FR2Validator(), "FR2_tests/" + TESTS.get(index))) == null) {
                 return;
             }
             // step 1 - set the interval of which the user wants to stay
@@ -46,7 +68,6 @@ public class FR2Executor extends Executor{
                     field_values.get(fields.get(ROOM_CODE)),
                     field_values,
                     fields
-
             );
 
             // Case 1.1 - if no matches are found then output 5 suggested possibilities for different rooms or dates
@@ -99,6 +120,7 @@ public class FR2Executor extends Executor{
             preparedStatement = preparer.insertFR2(pickedRes, NEXT_RES_CODE);
             int i = preparedStatement.executeUpdate();
             NEXT_RES_CODE++;
+            index++;
         } catch (Exception e) {
             e.printStackTrace();
         }

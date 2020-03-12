@@ -1,13 +1,15 @@
 package com.company.parsers;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 public class DateFactory {
     private final static Calendar calendar = Calendar.getInstance();
     private final static SimpleDateFormat simpleDateFormat= new SimpleDateFormat("yyyy-MM-dd");
 
+    public final static List<String> getMonths(){
+        return Arrays.asList("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+    }
     /**
      * Singleton class using only static members
      */

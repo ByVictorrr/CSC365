@@ -16,7 +16,7 @@ import static com.company.reservations.FR2.*;
 
 public class FR2Preparer extends Preparer{
 
-    final static String FR2_FOLDER = "FR2";
+    final static String FR2_FOLDER = "1";
     /**
      * @param BED_TYPE - type of bed entered
      * @param ROOM_TYPE - type of room entered
@@ -40,7 +40,7 @@ public class FR2Preparer extends Preparer{
         }else if(!BED_TYPE.equals("ANY") && ROOM_TYPE.equals("ANY")){
             file="FR2_ANY_ROOM.sql";
         }else{
-            file="FR2.sql";
+            file="1.sql";
         }
         query = new String(Files.readAllBytes(Paths.get(BASE_DIR+"/"+FR2_FOLDER + "/"+file)));
         // These fields need to be set no matter what
@@ -57,7 +57,7 @@ public class FR2Preparer extends Preparer{
             case "FR2_ANY_ROOM.sql":
                 statement.setString(5, fields.get(keys.get(BED)));
                 break;
-            case "FR2.sql":
+            case "1.sql":
                 statement.setString(5, fields.get(keys.get(BED)));
                 statement.setString(6, fields.get(keys.get(ROOM_CODE)));
                 break;
