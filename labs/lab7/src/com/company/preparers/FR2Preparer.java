@@ -15,6 +15,8 @@ import java.util.List;
 import static com.company.reservations.FR2.*;
 
 public class FR2Preparer extends Preparer{
+
+    final static String FR2_FOLDER = "FR2";
     /**
      * @param BED_TYPE - type of bed entered
      * @param ROOM_TYPE - type of room entered
@@ -28,7 +30,6 @@ public class FR2Preparer extends Preparer{
             throws  Exception
     {
 
-        final String FR2_FOLDER = "FR2";
         PreparedStatement statement;
         String query;
         String file;

@@ -16,11 +16,12 @@ import java.util.Map;
 import static com.company.reservations.FR3.*;
 
 public class FR3Preparer extends Preparer {
+
+    private static final String FR3_FOLDER = "FR3";
     public PreparedStatement selectFR3(int RES_CODE)
             throws  Exception
     {
 
-        final String FR3_FOLDER = "FR3";
         String query;
         query = new String(Files.readAllBytes(Paths.get(BASE_DIR+"/"+FR3_FOLDER + "/"+"FR3_RES_CODE.sql")));
         PreparedStatement statement = ConnectionAdapter.getConnection().prepareStatement(query);
