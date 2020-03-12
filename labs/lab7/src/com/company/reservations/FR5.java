@@ -10,45 +10,4 @@ public class FR5 {
     public static final int ROOM_CODE = 4;
     public static final int RES_CODE = 5;
 
-
-    /**
-     * Sets fields for a given returned sql query
-     * @param ColumnName - returned sql column name
-     * @param value - value of the sql returned column
-     */
-    public void setField(String ColumnName, String value)
-            throws Exception
-    {
-        switch (ColumnName){
-            case "RoomCode":
-                break;
-            case "RoomName":
-                break;
-            case "Beds":
-                break;
-            case "bedType":
-                break;
-            case "maxOcc":
-                break;
-            case "basePrice":
-                break;
-            case "decor":
-                break;
-            case "CODE":
-                break;
-            case "CheckIn":
-                break;
-            case "Checkout":
-                break;
-            case "Rate":
-                break;
-            case "FirstName":
-                break;
-            case "Adults":
-                break;
-            case "Kids":
-                break;
-        }
-    }
-
 }
