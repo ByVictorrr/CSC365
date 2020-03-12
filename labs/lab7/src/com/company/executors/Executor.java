@@ -63,10 +63,10 @@ abstract public class Executor {
      * @param field_names - the field names want a user to input
      * @return map that maps the field names to value or null if they want to go back to main menu
      */
-    protected static HashMap<String, String> getFields(List<String> field_names, Validator validator)
+    protected static HashMap<String, String> getFields(List<String> field_names, Validator validator, String debugFile)
         throws Exception
     {
-        File file = new File("/home/victord/CSC365/labs/lab7/tests/FR2");
+        File file = new File("tests/"+debugFile);
         int counter=0;
         final HashMap<String, String> fields = new HashMap<>(field_names.size());
         validator.setFields(field_names);

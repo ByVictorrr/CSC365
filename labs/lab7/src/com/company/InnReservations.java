@@ -29,6 +29,9 @@ public class InnReservations {
                     case "FR4":
                         new FR4Executor().execute();
                         break;
+                    case "FR5":
+                        new FR5Executor().execute();
+                        break;
 
                 }
 
@@ -37,7 +40,7 @@ public class InnReservations {
     }
     private static void printMenu(){
         System.out.println("Welcome to Victors Hotel reservation program");
-        System.out.println("Options: FR1, FR2, FR3, FR4");
+        System.out.println("Options: FR1, FR2, FR3, FR4, FR5, FR6");
     }
 
 

@@ -35,7 +35,7 @@ public class FR2Executor extends Executor{
         ResultSet rs;
         try {
             // step 0 - if user typed in "c" then return to main menu
-            if ((field_values = getFields(fields, new FR2Validator())) == null) {
+            if ((field_values = getFields(fields, new FR2Validator(), "FR2")) == null) {
                 return;
             }
             // step 1 - set the interval of which the user wants to stay

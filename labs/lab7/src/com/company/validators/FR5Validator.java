@@ -43,8 +43,7 @@ public class FR5Validator implements Validator{
                 }
                 break;
             case RES_CODE:
-                if (!value.matches(NUMBER_FORMAT) && !(Executor.NEXT_RES_CODE < Integer.parseInt(value)) &&
-                        !value.equals("ANY") &&!value.contains("%") && !value.contains("*")) {
+                if (!value.matches(NUMBER_FORMAT) && !value.equals("ANY") &&!value.contains("%") && !value.contains("*")) {
                     System.out.println("Please enter a valid reservation code");
                     return false;
                 }

@@ -25,11 +25,15 @@ public class FR5Executor extends Executor{
         FR5Validator validator = new FR5Validator();
         PreparedStatement statement;
         try {
-            if((field_values = getFields(fields, validator))== null){
+            if((field_values = getFields(fields, validator, "FR5"))== null){
                 return;
             }
             statement= preparer.selectFR5(field_values, fields);
             ResultSet resultSet = statement.executeQuery();
+            if(isMyResultSetEmpty(resultSet)){
+                System.out.println("Sorry couldn't find any records matching those inputs");
+                return;
+            }
             printResultSet(resultSet);
         }catch (Exception e){
             e.printStackTrace();

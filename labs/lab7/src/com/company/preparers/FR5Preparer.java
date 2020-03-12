@@ -16,11 +16,13 @@ public class FR5Preparer extends Preparer{
         StringBuilder query = new StringBuilder();
         // gives what fields are set at what index
         List<String> whatFieldsAreSet = new ArrayList<>();
-        query.append("SELECT rm.*, res.*\n" + "FROM lab7_reservations res, lab7_rooms rm WHERE ");
-        String []fields_keys = (String[])(fields.keySet().toArray());
+        query.append("SELECT rm.*, res.*\n" + "FROM lab7_reservations res, lab7_rooms rm WHERE res.Room=rm.RoomCode AND ");
+
+        Object []fields_keys = (fields.keySet().toArray());
+
         for(int i = 0; i < fields_keys.length; i++){
-            String key = fields_keys[i];
-            if(!key.equals("ANY")){
+            String key = (String)fields_keys[i];
+            if(!fields.get(key).equals("ANY")){
                 setStringBuilder(query, key, keys, whatFieldsAreSet);
                 // if not last add AND
                 if(!(i==fields_keys.length-1)){
@@ -34,7 +36,7 @@ public class FR5Preparer extends Preparer{
 
         // set the different fields
         for (int i=0; i<whatFieldsAreSet.size(); i++){
-            statement.setString(i+1, fields.get(whatFieldsAreSet));
+            statement.setString(i+1, fields.get(whatFieldsAreSet.get(i)));
         }
 
         return statement;

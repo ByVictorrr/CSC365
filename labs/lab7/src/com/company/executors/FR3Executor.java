@@ -51,7 +51,7 @@ public class FR3Executor extends Executor {
 
             // step 3 - read in values by the user
             System.out.println("If you don't want change in one of the fields type: no");
-            if((field_values = getFields(fields, validator))==null){
+            if((field_values = getFields(fields, validator, null))==null){
                 return;
             }
 
