@@ -19,6 +19,18 @@ public class FR2Validator implements Validator{
     {
 
         switch (index){
+            case FR2.FIRST_NAME:
+                if(!value.matches(NAME_FORMAT)){
+                    System.out.println("Please enter a valid first name");
+                    return false;
+                }
+                break;
+            case FR2.LAST_NAME:
+                if(!value.matches(NAME_FORMAT)){
+                    System.out.println("Please enter a valid last name");
+                    return false;
+                }
+                break;
             case FR2.ROOM_CODE:
                 if(!Executor.ROOM_CODES.contains(value) && !value.equals("ANY")) {
                     System.out.println("No such room code found!");

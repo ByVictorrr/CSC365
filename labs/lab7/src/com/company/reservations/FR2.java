@@ -16,9 +16,6 @@ public class FR2 extends FR{
     public static final int KIDS=7;
 
 
-    // set after getting above objects
-    private String FirstName, LastName;
-    private Double basePrice;
 
     private static int userTimeStay;
     static public void  setUserTimeStay(int timeStay){FR2.userTimeStay = timeStay;}
@@ -103,13 +100,6 @@ public class FR2 extends FR{
 
 
 
-    public String getFirstName() {
-        return FirstName;
-    }
-
-    public String getLastName() {
-        return LastName;
-    }
 
 }
 

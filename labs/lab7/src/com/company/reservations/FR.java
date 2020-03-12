@@ -11,8 +11,9 @@ abstract public class FR {
     protected String FirstName, LastName;
     protected String RoomName, RoomCode, Decor, BedType;
     protected Date CheckIn, CheckOut;
-    protected Integer Adults, Kids;
-    protected double Rate;
+    protected Integer Adults, Kids, Beds, maxOcc, resCode;
+    protected double Rate, basePrice;
+
 
     /**
      * Sets the different fields for each of the reservation objects
@@ -122,6 +123,19 @@ abstract public class FR {
         LastName = lastName;
     }
 
+    public double getBasePrice() {
+        return basePrice;
+    }
 
+    public Integer getBeds() {
+        return Beds;
+    }
 
+    public Integer getMaxOcc() {
+        return maxOcc;
+    }
+
+    public Integer getResCode() {
+        return resCode;
+    }
 }

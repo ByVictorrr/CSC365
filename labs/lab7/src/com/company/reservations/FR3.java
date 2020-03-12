@@ -12,7 +12,6 @@ public class FR3 extends FR{
 
 
     private int daysAvailableNextRes;
-    private double basePrice;
 
     /**
      * Sets fields for a given returned sql query
@@ -52,7 +51,4 @@ public class FR3 extends FR{
         return daysAvailableNextRes;
     }
 
-    public double getBasePrice() {
-        return basePrice;
-    }
 }

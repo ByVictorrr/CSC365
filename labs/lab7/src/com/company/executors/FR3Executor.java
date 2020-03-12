@@ -51,7 +51,9 @@ public class FR3Executor extends Executor {
 
             // step 3 - read in values by the user
             System.out.println("If you don't want change in one of the fields type: no");
-            field_values = getFields(fields, validator);
+            if((field_values = getFields(fields, validator))==null){
+                return;
+            }
 
             // step 4 - got to accept [no] as no change
             noChangeMap(field_values, fields, data);

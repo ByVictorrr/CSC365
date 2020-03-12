@@ -1,5 +1,6 @@
 package com.company.validators;
 
+import com.company.reservations.FR2;
 import com.company.reservations.FR3;
 
 import java.text.SimpleDateFormat;
@@ -15,6 +16,17 @@ public class FR3Validator implements Validator{
 
     public boolean valid(int index, String value) throws Exception {
         switch (index){
+            case FR2.FIRST_NAME:
+                if(!value.matches(NAME_FORMAT)){
+                    System.out.println("Please enter a valid first name");
+                    return false;
+                }
+                break;
+            case FR2.LAST_NAME:
+                if(!value.matches(NAME_FORMAT)){
+                    System.out.println("Please enter a valid last name");
+                    return false;
+                }
             case BEGIN_STAY:
                 if(!value.matches(DATE_FORMAT) && !value.equals("no")){
                    System.out.println("Enter a valid date for check in");
