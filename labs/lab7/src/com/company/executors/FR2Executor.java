@@ -7,6 +7,7 @@ import com.company.reservations.FR2;
 import com.company.validators.FR2Validator;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,86 +17,76 @@ import static com.company.reservations.FR2.*;
 
 public class FR2Executor extends Executor{
 
-   /*========================FOR TESTING ====================================*/
-    private final static List<String> TESTS;
-    private static int index = 0;
-    static {
-        List<String> _TESTS = new ArrayList<>();
-        String s = null;
-        try {
-            Process process = Runtime.getRuntime().exec("ls /home/victord/CSC365/labs/lab7/tests/FR2_tests/*");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    process.getInputStream()));
-            while ((s = reader.readLine()) != null) {
-                System.out.println("Script output: " + s);
-                _TESTS.add(s);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        TESTS= _TESTS;
-    }
-    /*========================================================================*/
+    public static final int LAST_NAME=0;
+    public static final int FIRST_NAME=1;
+    public static final int ROOM_CODE=2;
+    public static final int BED=3;
+    public static final int BEGIN_STAY=4;
+    public static final int END_STAY=5;
+    public static final int ADULTS=6;
+    public static final int KIDS=7;
 
+    private final List<String> fields = Arrays.asList(
+            "First Name",
+            "Last Name",
+            "Room Code",
+            "Bed Type",
+            "Begin Date Of Stay",
+            "End Date Of Stay",
+            "Number Of Adults",
+            "Number Of Children"
+    );
 
     public void execute() {
-
-        final FR2Preparer preparer = new FR2Preparer();
-        final List<String> fields = Arrays.asList(
-                "First Name",
-                "Last Name",
-                "Room Code",
-                "Bed Type",
-                "Begin Date Of Stay",
-                "End Date Of Stay",
-                "Number Of Adults",
-                "Number Of Children"
-        );
 
         PreparedStatement preparedStatement;
         HashMap<String, String> field_values;
         ResultSet rs;
+        String option, confirm;
+        FR2Validator validator;
         try {
-            // step 0 - if user typed in "c" then return to main menu
-            if ((field_values = getFields(fields, new FR2Validator(), "FR2_tests/" + TESTS.get(index))) == null) {
+            /** Step 1 - get the inputted fields given in the fields and store in field_values **/
+            if ((field_values = getFields(fields, (validator=new FR2Validator()), new File("tests/FR2_tests/1"))) == null) {
                 return;
             }
-            // step 1 - set the interval of which the user wants to stay
-            FR2.setUserTimeStay(DateFactory.daysBetween(field_values.get(fields.get(END_STAY)), field_values.get(fields.get(BEGIN_STAY))));
-            // step 2 - build and then return the query of rooms
-            preparedStatement = preparer.selectFR2(
+
+            /** Step 2 - prepare the query using the inputted fields **/
+            preparedStatement = FR2Preparer.select(
                     field_values.get(fields.get(BED)),
                     field_values.get(fields.get(ROOM_CODE)),
                     field_values,
                     fields
             );
-
-            // Case 1.1 - if no matches are found then output 5 suggested possibilities for different rooms or dates
+            /** What if the result of the query is empty??? */
             if (isMyResultSetEmpty((rs=preparedStatement.executeQuery()))) {
                 System.out.println("Sorry no rooms found that meet those requirements." +
                         "\nHere are some similar rooms: "
                 );
-                // this trys to give room avable
-                preparedStatement = preparer.selectFR2(
+                /** Look for reservations such that it matches "ANY" bed type and room type **/
+                preparedStatement = FR2Preparer.select(
                         "ANY",
                         "ANY",
                         field_values,
                         fields
                 );
                 if(isMyResultSetEmpty((rs=preparedStatement.executeQuery()))){
-                    System.out.println("Sorry couldn't find any available with that time frame and number of people");
+                    System.out.println("Sorry couldn't find any available rooms with those in and out times");
                     return;
                 }
             }
-            System.out.println("Choose number below to book (c - cancel and go back to the main menu)");
-            Map<Integer, FR> res = getReservations(rs, new FR2());
-            // step 2 - option to input booking number(ROOM CODE) of one of those rooms
-            System.out.println("Please enter the booking number to order");
-            res.forEach((k, v) -> System.out.println(k + " " + ((FR2)v).toString()));
-            // show the returned list in of numbered options
+            /** Step 3 - store the user typed data to show in the formatted reservations**/
+            FR2.setUserTimeStay(DateFactory.daysBetween(field_values.get(fields.get(END_STAY)), field_values.get(fields.get(BEGIN_STAY))));
+            FR2.setAdults(Integer.parseInt(field_values.get(fields.get(ADULTS))));
+            FR2.setKids(Integer.parseInt(field_values.get(fields.get(KIDS))));
+            FR2.setFirstName(field_values.get(fields.get(FIRST_NAME)));
+            FR2.setLastName(field_values.get(fields.get(LAST_NAME)));
 
-            String option, confirm;
-            while (!(option = new Scanner(System.in).next()).matches("\\d+") ||
+            /** Step 4 - format the reservations returned and print them out*/
+            Map<Integer, FR> res = getReservations(rs, new FR2());
+            System.out.println("Choose number below to book (c - cancel and go back to the main menu)");
+            res.forEach((k, v) -> System.out.println( k+ " " + ((FR2)v).toString()));
+
+            while (!(option = new Scanner(System.in).next()).matches("\\d+") &&
                     !res.keySet().contains(Integer.parseInt(option))) {
                 // go back to main menu
                 if (option.equals("c")) {
@@ -103,24 +94,17 @@ public class FR2Executor extends Executor{
                 }
                 System.out.println("Please enter a valid number");
             }
+            /** Step 5 - get the picked reservation **/
             FR2 pickedRes = (FR2) res.get(Integer.parseInt(option));
-            /* for formatting the confirmed reservation*/
-            pickedRes.setFirstName(field_values.get(fields.get(FR2.FIRST_NAME)));
-            pickedRes.setLastName(field_values.get(fields.get(FR2.LAST_NAME)));
-            pickedRes.setKids(Integer.parseInt(field_values.get(fields.get(KIDS))));
-            pickedRes.setAdults(Integer.parseInt(field_values.get(fields.get(ADULTS))));
-
             System.out.println(pickedRes.PickedToString());
-
             System.out.println("Y/N to to confirm reservation");
             if (!((confirm = new Scanner(System.in).next()).matches("Y")) && !(confirm.matches("y"))) {
                 return;
             }
-            // Insert into db
-            preparedStatement = preparer.insertFR2(pickedRes, NEXT_RES_CODE);
+            /** Step 6 - insert record into db **/
+            preparedStatement = FR2Preparer.insert(pickedRes, NEXT_RES_CODE);
             int i = preparedStatement.executeUpdate();
-            NEXT_RES_CODE++;
-            index++;
+            RES_CODES.add(NEXT_RES_CODE++);
         } catch (Exception e) {
             e.printStackTrace();
         }

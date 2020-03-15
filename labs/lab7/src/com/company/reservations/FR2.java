@@ -6,19 +6,16 @@ import com.company.utilities.Pair;
 import java.util.Date;
 
 public class FR2 extends FR{
-    public static final int LAST_NAME=0;
-    public static final int FIRST_NAME=1;
-    public static final int ROOM_CODE=2;
-    public static final int BED=3;
-    public static final int BEGIN_STAY=4;
-    public static final int END_STAY=5;
-    public static final int ADULTS=6;
-    public static final int KIDS=7;
-
 
 
     private static int userTimeStay;
+    private static int Kids, Adults;
+    private static String FirstName, LastName;
     static public void  setUserTimeStay(int timeStay){FR2.userTimeStay = timeStay;}
+    static public void setAdults(int adults){FR2.Adults=adults;}
+    static public void setKids(int kids){FR2.Kids=kids;}
+    static public void setLastName(String LN){FR2.LastName=LN;}
+    static public void setFirstName(String FN){FR2.FirstName=FN;}
 
 
     /**
@@ -45,12 +42,6 @@ public class FR2 extends FR{
             case "Checkout":
                 this.CheckIn=  DateFactory.StringToDate(value);
                 break;
-            case "Adults":
-                this.Adults=Integer.parseInt(value);
-                break;
-            case "Kids":
-                this.Kids=Integer.parseInt(value);
-                break;
             case "decor":
                 this.Decor=value;
                 break;
@@ -63,23 +54,38 @@ public class FR2 extends FR{
                 break;
             case "diff":
                 this.CheckOut = DateFactory.addDays(userTimeStay, this.CheckIn);
+                break;
         }
 
     }
 
+    public static String getLastName() {
+        return LastName;
+    }
 
+    public static String getFirstName() {
+        return FirstName;
+    }
+
+    public static int getKids() {
+        return FR2.Kids;
+    }
+
+    public static int getAdults() {
+        return FR2.Adults;
+    }
 
     @Override
     public String toString() {
-        return "1{" +
+        return "Available Reservations{" +
                 "RoomName='" + RoomName + '\'' +
                 ", RoomCode='" + RoomCode + '\'' +
                 ", Decor='" + Decor + '\'' +
                 ", BedType='" + BedType + '\'' +
                 ", CheckIn=" + CheckIn +
                 ", CheckOut=" + CheckOut +
-                ", Adults=" + Adults +
-                ", Kids=" + Kids +
+                ", Adults=" + FR2.Adults +
+                ", Kids=" + FR2.Kids +
                 ", Rate=" + Rate +
                 '}';
     }

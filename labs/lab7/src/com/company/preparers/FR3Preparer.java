@@ -13,23 +13,26 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static com.company.reservations.FR3.*;
+import static com.company.executors.FR3Executor.*;
 
-public class FR3Preparer extends Preparer {
+public class FR3Preparer{
+
 
     private static final String FR3_FOLDER = "FR3";
-    public PreparedStatement selectFR3(int RES_CODE)
+    private FR3Preparer(){}
+
+    public static PreparedStatement select(int RES_CODE)
             throws  Exception
     {
 
         String query;
-        query = new String(Files.readAllBytes(Paths.get(BASE_DIR+"/"+FR3_FOLDER + "/"+"FR3_RES_CODE.sql")));
+        query = new String(Files.readAllBytes(Paths.get(FR3_FOLDER + "/"+"FR3_RES_CODE.sql")));
         PreparedStatement statement = ConnectionAdapter.getConnection().prepareStatement(query);
         statement.setInt(1, RES_CODE);
         return statement;
     }
 
-    public PreparedStatement updateFR3(Map<String, String> fieldValues, List<String> fields, double basePrice, int RES_CODE)
+    public static PreparedStatement update(Map<String, String> fieldValues, List<String> fields, double rate, int RES_CODE)
             throws Exception
     {
         final PreparedStatement statement = ConnectionAdapter.getConnection().prepareStatement(
@@ -52,9 +55,11 @@ public class FR3Preparer extends Preparer {
         statement.setDate(4, new java.sql.Date(CheckOut.getTime()));
         statement.setInt(5, Integer.parseInt(fieldValues.get(fields.get(KIDS))));
         statement.setInt(6, Integer.parseInt(fieldValues.get(fields.get(ADULTS))));
-        statement.setDouble(7, FR.totalRateOfStay(CheckIn, CheckOut, basePrice));
+        statement.setDouble(7, rate);
         statement.setInt(8, RES_CODE);
         return statement;
 
     }
+
+
 }

@@ -13,13 +13,28 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class FR6Executor extends Executor{
+
+    public enum MONTH{
+        JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER;
+        private static MONTH [] months = values();
+        /** january = 1, ect. so minus one to relate to enum value **/
+        public static MONTH getMonth(int monthNum){
+            return months[(monthNum-1) % months.length];
+        }
+
+
+    }
+
     @Override
     public void execute() {
-        FR6Preparer preparer = new FR6Preparer();
 
         PreparedStatement statement;
+        Map<MONTH, Double> totalRevPerMonth = new EnumMap<MONTH, Double>(MONTH.class);
+        initTotRevPerMonth(totalRevPerMonth);
+        MONTH month = MONTH.JANUARY;
+
         try {
-            statement=preparer.selectFR6();
+            statement=FR6Preparer.select();
             ResultSet resultSet = statement.executeQuery();
 
             Map<Integer, FR> res = getReservations(resultSet, new FR6());
@@ -29,13 +44,19 @@ public class FR6Executor extends Executor{
             formatSchema(sb, DateFactory.getMonths());
 
             Double RoomTotRev=0.0;
+
+            /** Step 1 - go through all the records **/
             for(FR6 record: records){
-                // so append the room name
-                 if(record.getMonth()==1) {
+
+                /** for the first month get roomname **/
+                 if((month = MONTH.getMonth(record.getMonth()))==MONTH.JANUARY) {
                     sb.append(record.getRoomName() + ", ");
                  }
+                 /** append month rev **/
                  sb.append(record.getMonthRev());
-                 if(!(record.getMonth()==12)){
+                 totalRevPerMonth.put(month, totalRevPerMonth.get(month)+record.getMonthRev());
+                 /** if not the last month then append comma */
+                 if(month != MONTH.DECEMBER){
                      RoomTotRev+=record.getMonthRev();
                      sb.append(", ");
                  }else{
@@ -45,7 +66,11 @@ public class FR6Executor extends Executor{
                      RoomTotRev=0.0;
                  }
             }
-            System.out.println(sb);
+            System.out.print(sb);
+            // have to print out the total
+            printTotalRecord(totalRevPerMonth);
+
+
 
         }catch (Exception e){
             e.printStackTrace();
@@ -53,6 +78,22 @@ public class FR6Executor extends Executor{
 
 
     }
+    private void printTotalRecord(Map<MONTH, Double> map){
+        Double total = 0.0;
+        System.out.print("Total, ");
+        for(Double monthTot: map.values()){
+            System.out.print(FR.roundTwoDecimal(monthTot)+", ");
+            total+=monthTot;
+        }
+        System.out.println(FR.roundTwoDecimal(total));
+
+    }
+    private void initTotRevPerMonth(Map<MONTH, Double> map){
+        for (MONTH month: MONTH.months){
+            map.put(month, 0.0);
+        }
+    }
+
     private void formatSchema(StringBuilder sb, List<String> months){
         sb.append("RoomName, ");
         for(String month: months){

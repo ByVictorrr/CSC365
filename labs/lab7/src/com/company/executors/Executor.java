@@ -1,5 +1,6 @@
 package com.company.executors;
 
+import com.company.ConnectionAdapter;
 import com.company.parsers.DateFactory;
 import com.company.preparers.*;
 import com.company.reservations.*;
@@ -15,42 +16,54 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 abstract public class Executor {
 
-    public final static Integer MAX_ADULTS;
-    public final static Integer MAX_KIDS;
+    /**
+     * These contants below are used to valid inputs
+     */
+    public static List<Integer> RES_CODES;
+    public final static Integer MAX_OCC;
     public final static List<String> ROOM_CODES;
     public final static List<String> BED_TYPES;
     public static Integer NEXT_RES_CODE;
+
     static {
         List<ResultSet> rs = new ArrayList<>();
-        Integer _MAX_ADULTS = 0;
-        Integer _MAX_KIDS = 0;
-        List<String> _ROOM_CODES = null;
-        List<String> _BED_TYPES = null;
+        Integer _MAX_OCC = 0;
+        List<String> _ROOM_CODES = null, _BED_TYPES = null;
+        List<Integer> _RES_CODES = null;
         Integer _NEXT_RES_CODE = 0;
+
         try {
-            rs.add(ConstantsPreparer.MAX_ADULTS().executeQuery());
-            rs.add(ConstantsPreparer.MAX_KIDS().executeQuery());
+            rs.add(ConstantsPreparer.MAX_OCC().executeQuery());
             rs.add(ConstantsPreparer.MAX_RES_CODE().executeQuery());
+            rs.add(ConstantsPreparer.RES_CODES().executeQuery());
             rs.add(ConstantsPreparer.BED_TYPES().executeQuery());
             rs.add(ConstantsPreparer.ROOM_TYPES().executeQuery());
             rs.get(0).next();
             rs.get(1).next();
-            rs.get(2).next();
-            _MAX_ADULTS = rs.get(0).getInt(1);
-            _MAX_KIDS = rs.get(1).getInt(1);
-            _NEXT_RES_CODE = rs.get(2).getInt(1)+1;
-            _BED_TYPES = GET_LIST(rs.get(3));
-            _ROOM_CODES = GET_LIST(rs.get(4));
-
-        }catch (SQLException e){
+            _MAX_OCC = rs.get(0).getInt(1);
+            _NEXT_RES_CODE = rs.get(1).getInt(1)+1;
+            _RES_CODES = GET_LIST(rs.get(2))
+                    .stream()
+                    .map(r->(Integer)r)
+                    .collect(Collectors.toList());
+            _BED_TYPES = GET_LIST(rs.get(3))
+                    .stream()
+                    .map(b->(String)b)
+                    .collect(Collectors.toList());
+            _ROOM_CODES = GET_LIST(rs.get(4))
+                    .stream()
+                    .map(r->(String)r)
+                    .collect(Collectors.toList());
+        }catch (SQLException e) {
             e.printStackTrace();
         }
-        MAX_ADULTS=_MAX_ADULTS;
-        MAX_KIDS=_MAX_KIDS;
+        MAX_OCC = _MAX_OCC;
         ROOM_CODES=_ROOM_CODES;
+        RES_CODES = _RES_CODES;
         BED_TYPES=_BED_TYPES;
         NEXT_RES_CODE=_NEXT_RES_CODE;
     }
@@ -63,17 +76,15 @@ abstract public class Executor {
      * @param field_names - the field names want a user to input
      * @return map that maps the field names to value or null if they want to go back to main menu
      */
-    protected static HashMap<String, String> getFields(List<String> field_names, Validator validator, String debugFile)
+    protected static HashMap<String, String> getFields(List<String> field_names, Validator validator, File debug)
         throws Exception
     {
-        File file = new File("tests/"+debugFile);
         int counter=0;
         final HashMap<String, String> fields = new HashMap<>(field_names.size());
         validator.setFields(field_names);
         validator.setFieldsValues(fields);
         String value;
-        Scanner scanner = new Scanner(file);
-
+        Scanner scanner= new Scanner(debug);
         while(counter < field_names.size()){
             System.out.println("input " + field_names.get(counter)
                     + "(c - return to main menu): ");
@@ -144,11 +155,11 @@ abstract public class Executor {
      * @return returns a list for LIMIT VARIBLES
      * @throws SQLException
      */
-    private static List<String> GET_LIST(ResultSet rs)
+    private static List<Object> GET_LIST(ResultSet rs)
             throws SQLException {
-        List<String> LIST = new ArrayList<>();
+        List<Object> LIST = new ArrayList<>();
         while (rs.next()) {
-            LIST.add(rs.getString(1));
+            LIST.add(rs.getObject(1));
         }
         return LIST;
     }

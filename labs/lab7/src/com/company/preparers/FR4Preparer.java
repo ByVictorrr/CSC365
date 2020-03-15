@@ -5,9 +5,11 @@ import com.company.ConnectionAdapter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class FR4Preparer extends Preparer{
+public class FR4Preparer{
 
-    public PreparedStatement selectFR4(int RES_CODE) throws SQLException{
+    private FR4Preparer(){}
+
+    public static PreparedStatement select(int RES_CODE) throws SQLException{
         PreparedStatement statement = ConnectionAdapter.getConnection().prepareStatement(
                 "SELECT * FROM lab7_reservations WHERE CODE = ?"
         );
@@ -15,7 +17,8 @@ public class FR4Preparer extends Preparer{
         return statement;
     }
 
-    public PreparedStatement updateFR4(int RES_CODE) throws SQLException {
+
+    public static PreparedStatement update(int RES_CODE) throws SQLException {
         PreparedStatement statement = ConnectionAdapter.getConnection().prepareStatement(
                 "DELETE FROM lab7_reservations WHERE CODE = ?"
         );

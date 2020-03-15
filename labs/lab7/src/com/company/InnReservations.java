@@ -37,12 +37,12 @@ public class InnReservations {
 
                 }
 
-        }while(!command.equals("q") | !command.equals("quit"));
+        }while(!command.equals("q") && !command.equals("quit"));
 
     }
     private static void printMenu(){
-        System.out.println("Welcome to Victors Hotel reservation program");
-        System.out.println("Options: FR1, FR2, FR3, FR4, FR5, FR6");
+        System.out.println("\nWelcome to Victors Hotel reservation program");
+        System.out.println("Options: FR1, FR2, FR3, FR4, FR5, FR6 (q/quit - to exit)");
     }
 
 

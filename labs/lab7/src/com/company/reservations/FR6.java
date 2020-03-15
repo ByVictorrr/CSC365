@@ -28,9 +28,7 @@ public class FR6 extends FR{
         }
     }
 
-    public static Double roundTwoDecimal(Double value){
-       return Math.round(value*100.0)/100.0;
-    }
+
     @Override
     public String getRoomCode() {
         return RoomCode;

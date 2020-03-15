@@ -1,5 +1,6 @@
 package com.company.reservations;
 
+import com.company.parsers.DateFactory;
 import com.company.utilities.Pair;
 
 import java.text.SimpleDateFormat;
@@ -8,10 +9,9 @@ import java.util.Date;
 
 abstract public class FR {
 
-    protected String FirstName, LastName;
     protected String RoomName, RoomCode, Decor, BedType;
     protected Date CheckIn, CheckOut;
-    protected Integer Adults, Kids, Beds, maxOcc, resCode;
+    protected Integer Adults, Kids, Beds, resCode;
     protected double Rate, basePrice;
 
 
@@ -31,8 +31,7 @@ abstract public class FR {
      * @param end_d - send date
      * @return <code>Pair<num week days, num of weekend days></code>
      */
-    public static Pair<Integer, Integer> split_days(Date start_d, Date end_d){
-
+    private static Pair<Integer, Integer> split_days(Date start_d, Date end_d){
         Integer num_weekDays=0, num_weekendsDays=0;
         Calendar start = Calendar.getInstance();
         start.setTime(start_d);
@@ -57,11 +56,18 @@ abstract public class FR {
      * Given checkin, checkout, and basePrice return the total rate
      * @return total rate
      */
-    public static double totalRateOfStay(Date CheckIn, Date CheckOut, double basePrice){
+    public static Double totalRateOfStay(Date CheckIn, Date CheckOut, double basePrice){
+
+        // last day does not count
+        CheckOut = DateFactory.addDays(-1, CheckOut);
         final Pair<Integer, Integer> days = split_days(CheckIn, CheckOut);
-        return Math.round((basePrice*days.getKey() + basePrice*days.getValue() * 1.1)*1.18*100)/100;
+        double rate = roundTwoDecimal((basePrice*days.getKey() + basePrice*days.getValue() * 1.1)*1.18);
+        return rate;
     }
 
+    public static Double roundTwoDecimal(Double value){
+        return Math.round(value*100.0)/100.0;
+    }
 
     public String getRoomName() {
         return RoomName;
@@ -69,10 +75,6 @@ abstract public class FR {
 
     public String getRoomCode() {
         return RoomCode;
-    }
-
-    public String getDecor() {
-        return Decor;
     }
 
     public String getBedType() {
@@ -87,40 +89,12 @@ abstract public class FR {
         return CheckOut;
     }
 
-    public Integer getAdults() {
-        return Adults;
-    }
-
-    public Integer getKids() {
-        return Kids;
-    }
-
     public double getRate() {
         return Rate;
     }
 
-    public String getLastName() {
-        return LastName;
-    }
-
-    public String getFirstName() {
-        return FirstName;
-    }
-
     public void setAdults(Integer adults) {
         Adults = adults;
-    }
-
-    public void setKids(Integer kids) {
-        Kids = kids;
-    }
-
-    public void setFirstName(String firstName) {
-        FirstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        LastName = lastName;
     }
 
     public double getBasePrice() {
@@ -131,9 +105,6 @@ abstract public class FR {
         return Beds;
     }
 
-    public Integer getMaxOcc() {
-        return maxOcc;
-    }
 
     public Integer getResCode() {
         return resCode;

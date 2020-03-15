@@ -7,9 +7,12 @@ import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.util.*;
 
-import static com.company.reservations.FR5.*;
-public class FR5Preparer extends Preparer{
-    public PreparedStatement selectFR5(Map<String, String> fields, List<String> keys)
+import static com.company.executors.FR5Executor.*;
+public class FR5Preparer{
+
+    private FR5Preparer(){}
+
+    public static PreparedStatement select(Map<String, String> fields, List<String> keys)
             throws Exception
     {
 
@@ -20,12 +23,14 @@ public class FR5Preparer extends Preparer{
 
         Object []fields_keys = (fields.keySet().toArray());
 
+        long not_any_count = fields.values().stream().filter(p->!p.equals("ANY")).count();
+
         for(int i = 0; i < fields_keys.length; i++){
             String key = (String)fields_keys[i];
             if(!fields.get(key).equals("ANY")){
                 setStringBuilder(query, key, keys, whatFieldsAreSet);
-                // if not last add AND
-                if(!(i==fields_keys.length-1)){
+                // if not last add AND (need to count last not ANY"
+                if(!(i==not_any_count-1)){
                     query.append(" AND ");
                 }
             }
@@ -41,7 +46,7 @@ public class FR5Preparer extends Preparer{
 
         return statement;
     }
-    void setStringBuilder(StringBuilder sb, String key, List<String> keys, List<String> whatFieldsAreSet){
+    private static void setStringBuilder(StringBuilder sb, String key, List<String> keys, List<String> whatFieldsAreSet){
         if(key.equals(keys.get(FIRST_NAME))){
            sb.append("FirstName LIKE ?");
            whatFieldsAreSet.add(keys.get(FIRST_NAME));
@@ -49,16 +54,16 @@ public class FR5Preparer extends Preparer{
             sb.append("LastName LIKE ?");
             whatFieldsAreSet.add(keys.get(LAST_NAME));
         }else if(key.equals(keys.get(BEGIN_DAY))){
-            sb.append("CheckIn >= ?");
+            sb.append("CheckIn = ?");
             whatFieldsAreSet.add(keys.get(BEGIN_DAY));
         }else if(key.equals(keys.get(END_DAY))){
-            sb.append("CheckOut <= ?");
+            sb.append("CheckOut = ?");
             whatFieldsAreSet.add(keys.get(END_DAY));
         }else if(key.equals(keys.get(ROOM_CODE))){
-            sb.append("Room <= ?");
+            sb.append("Room LIKE ?");
             whatFieldsAreSet.add(keys.get(ROOM_CODE));
         }else if(key.equals(keys.get(RES_CODE))){
-            sb.append("CODE <= ?");
+            sb.append("CODE LIKE ?");
             whatFieldsAreSet.add(keys.get(ROOM_CODE));
         }
     }

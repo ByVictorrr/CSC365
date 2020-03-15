@@ -12,11 +12,14 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.company.reservations.FR2.*;
+import static com.company.executors.FR2Executor.*;
 
-public class FR2Preparer extends Preparer{
+public class FR2Preparer{
 
-    final static String FR2_FOLDER = "1";
+
+    final static String FR2_FOLDER = "FR2";
+    private FR2Preparer(){}
+
     /**
      * @param BED_TYPE - type of bed entered
      * @param ROOM_TYPE - type of room entered
@@ -25,7 +28,7 @@ public class FR2Preparer extends Preparer{
      * @return PreparedStatement - that gives back reservations for info entered
      * @throws Exception
      */
-    public PreparedStatement selectFR2(final String BED_TYPE, final String ROOM_TYPE,
+    public static PreparedStatement select(final String BED_TYPE, final String ROOM_TYPE,
                                        final HashMap<String, String > fields, final List<String> keys)
             throws  Exception
     {
@@ -40,9 +43,9 @@ public class FR2Preparer extends Preparer{
         }else if(!BED_TYPE.equals("ANY") && ROOM_TYPE.equals("ANY")){
             file="FR2_ANY_ROOM.sql";
         }else{
-            file="1.sql";
+            file="FR2.sql";
         }
-        query = new String(Files.readAllBytes(Paths.get(BASE_DIR+"/"+FR2_FOLDER + "/"+file)));
+        query = new String(Files.readAllBytes(Paths.get(FR2_FOLDER + "/"+file)));
         // These fields need to be set no matter what
         statement = ConnectionAdapter.getConnection().prepareStatement(query);
 
@@ -57,14 +60,14 @@ public class FR2Preparer extends Preparer{
             case "FR2_ANY_ROOM.sql":
                 statement.setString(5, fields.get(keys.get(BED)));
                 break;
-            case "1.sql":
+            case "FR2.sql":
                 statement.setString(5, fields.get(keys.get(BED)));
                 statement.setString(6, fields.get(keys.get(ROOM_CODE)));
                 break;
         }
         return statement;
     }
-    public PreparedStatement insertFR2(FR2 res, int CODE_COUNT)
+    public static PreparedStatement insert(FR2 res, int CODE_COUNT)
             throws SQLException
     {
         PreparedStatement preparedStatement = ConnectionAdapter.getConnection().
@@ -77,10 +80,10 @@ public class FR2Preparer extends Preparer{
         preparedStatement.setDate(3,  new Date(res.getCheckIn().getTime()));
         preparedStatement.setDate(4, new Date(res.getCheckOut().getTime()));
         preparedStatement.setDouble(5, res.getRate());
-        preparedStatement.setString(6, res.getLastName());
-        preparedStatement.setString(7, res.getFirstName());
-        preparedStatement.setInt(8, res.getAdults());
-        preparedStatement.setInt(9, res.getKids());
+        preparedStatement.setString(6, FR2.getLastName());
+        preparedStatement.setString(7, FR2.getFirstName());
+        preparedStatement.setInt(8, FR2.getAdults());
+        preparedStatement.setInt(9, FR2.getKids());
 
         return preparedStatement;
     }

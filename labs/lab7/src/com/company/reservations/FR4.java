@@ -5,6 +5,7 @@ import com.company.parsers.DateFactory;
 public class FR4 extends FR{
     // this object store information to cancel a reservation
 
+    private String LastName, FirstName;
     public void setField(String ColumnName, String value)
             throws Exception
     {
@@ -41,6 +42,9 @@ public class FR4 extends FR{
 
     public String getFirstName() {
         return FirstName;
+    }
+    public String getLastName(){
+        return LastName;
     }
 
     @Override

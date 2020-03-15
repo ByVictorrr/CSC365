@@ -16,27 +16,26 @@ public class FR4Executor extends Executor{
 
     public void execute() {
 
-        final FR4Preparer preparer = new FR4Preparer();
         PreparedStatement preparedStatement;
 
         String RES_CODE = "", confirm;
         ResultSet resultSet = null;
         FR4Validator validator = new FR4Validator();
         try{
-            while ( isMyResultSetEmpty(resultSet)) {
+            /** Step 1 - get user entered reservation code */
+            while (isMyResultSetEmpty(resultSet)) {
                 System.out.println("Enter a reservation code(c - back to main menu)");
-                RES_CODE = new Scanner(System.in).next();
-                if(RES_CODE.equals("c")){
+                if((RES_CODE=new Scanner(System.in).next()).equals("c")){
                     return;
                 }else if (!validator.valid(0, RES_CODE)) {
                     continue;
                 }
-                preparedStatement = preparer.selectFR4(Integer.parseInt(RES_CODE));
-                if(isMyResultSetEmpty(resultSet = preparedStatement.executeQuery())){
+                preparedStatement = FR4Preparer.select(Integer.parseInt(RES_CODE));
+                if(isMyResultSetEmpty((resultSet = preparedStatement.executeQuery()))){
                     System.out.println("Found no reservations with that code.");
                 }
             }
-
+            /** Step 2 - convert the result to a FR4 object **/
             Map<Integer, FR> res = getReservations(resultSet, new FR4());
             FR4 data = (FR4)res.get(0);
 
@@ -46,7 +45,8 @@ public class FR4Executor extends Executor{
                 return;
             }
 
-            preparedStatement = preparer.updateFR4(Integer.parseInt(RES_CODE));
+            /** Step 3 - delete the reservation **/
+            preparedStatement = FR4Preparer.update(Integer.parseInt(RES_CODE));
             int i = preparedStatement.executeUpdate();
 
         }catch (Exception e){
