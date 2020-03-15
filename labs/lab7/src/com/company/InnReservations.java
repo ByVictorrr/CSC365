@@ -34,7 +34,7 @@ public class InnReservations {
                         break;
                     case "FR6":
                         new FR6Executor().execute();
-
+                        break;
                 }
 
         }while(!command.equals("q") && !command.equals("quit"));

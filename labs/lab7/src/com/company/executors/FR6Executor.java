@@ -61,7 +61,7 @@ public class FR6Executor extends Executor{
                      sb.append(", ");
                  }else{
                      RoomTotRev+=record.getMonthRev();
-                     sb.append(", " + FR6.roundTwoDecimal(RoomTotRev));
+                     sb.append(", " + FR.roundTwoDecimal(RoomTotRev));
                      sb.append("\n");
                      RoomTotRev=0.0;
                  }

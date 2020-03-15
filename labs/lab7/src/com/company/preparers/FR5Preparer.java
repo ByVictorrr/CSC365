@@ -19,9 +19,10 @@ public class FR5Preparer{
         StringBuilder query = new StringBuilder();
         // gives what fields are set at what index
         List<String> whatFieldsAreSet = new ArrayList<>();
-        query.append("SELECT rm.*, res.*\n" + "FROM lab7_reservations res, lab7_rooms rm WHERE res.Room=rm.RoomCode AND ");
+        query.append("SELECT rm.RoomName, res.*\n" + "FROM lab7_reservations res, lab7_rooms rm WHERE res.Room=rm.RoomCode AND ");
 
         Object []fields_keys = (fields.keySet().toArray());
+        int index_not_any = 0;
 
         long not_any_count = fields.values().stream().filter(p->!p.equals("ANY")).count();
 
@@ -30,8 +31,9 @@ public class FR5Preparer{
             if(!fields.get(key).equals("ANY")){
                 setStringBuilder(query, key, keys, whatFieldsAreSet);
                 // if not last add AND (need to count last not ANY"
-                if(!(i==not_any_count-1)){
+                if(index_not_any!=not_any_count-1 && not_any_count!=0){
                     query.append(" AND ");
+                    index_not_any++;
                 }
             }
         }
@@ -54,17 +56,17 @@ public class FR5Preparer{
             sb.append("LastName LIKE ?");
             whatFieldsAreSet.add(keys.get(LAST_NAME));
         }else if(key.equals(keys.get(BEGIN_DAY))){
-            sb.append("CheckIn = ?");
+            sb.append("CheckIn >= ?");
             whatFieldsAreSet.add(keys.get(BEGIN_DAY));
         }else if(key.equals(keys.get(END_DAY))){
-            sb.append("CheckOut = ?");
+            sb.append("CheckOut <= ?");
             whatFieldsAreSet.add(keys.get(END_DAY));
         }else if(key.equals(keys.get(ROOM_CODE))){
             sb.append("Room LIKE ?");
             whatFieldsAreSet.add(keys.get(ROOM_CODE));
         }else if(key.equals(keys.get(RES_CODE))){
             sb.append("CODE LIKE ?");
-            whatFieldsAreSet.add(keys.get(ROOM_CODE));
+            whatFieldsAreSet.add(keys.get(RES_CODE));
         }
     }
 }

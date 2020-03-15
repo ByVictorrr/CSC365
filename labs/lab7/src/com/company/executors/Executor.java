@@ -86,8 +86,7 @@ abstract public class Executor {
         String value;
         Scanner scanner= new Scanner(debug);
         while(counter < field_names.size()){
-            System.out.println("input " + field_names.get(counter)
-                    + "(c - return to main menu): ");
+            System.out.println("input " + field_names.get(counter) + "(c - return to main menu): ");
             if((value = scanner.next()).equals( "c")){
                 return null;
             }

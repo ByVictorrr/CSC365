@@ -46,7 +46,7 @@ public class ConstantsPreparer{
             throws SQLException
     {
         PreparedStatement p;
-        p =  ConnectionAdapter.getConnection().prepareStatement("SELECT CODE FROM lab7_reservations");
+        p = ConnectionAdapter.getConnection().prepareStatement("SELECT CODE FROM lab7_reservations");
         return p;
     }
 
