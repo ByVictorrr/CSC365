@@ -36,7 +36,7 @@ public class FR5Executor extends Executor{
         try {
             System.out.println("Type 'ANY' to search for any value of that field");
             /** Step 1 - get input for searching for reservations of above fields */
-            if((field_values = getFields(fields, validator, new File("tests/FR5_tests/empty")))== null){
+            if((field_values = getFields(fields, validator))== null){
                 return;
             }
             statement= FR5Preparer.select(field_values, fields);

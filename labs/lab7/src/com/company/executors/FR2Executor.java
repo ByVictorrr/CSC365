@@ -45,8 +45,9 @@ public class FR2Executor extends Executor{
         String option, confirm;
         FR2Validator validator;
         try {
+            System.out.println("optional 'ANY' for Room code, bed type");
             /** Step 1 - get the inputted fields given in the fields and store in field_values **/
-            if ((field_values = getFields(fields, (validator=new FR2Validator()), new File("tests/FR2_tests/1"))) == null) {
+            if ((field_values = getFields(fields, (validator=new FR2Validator()))) == null) {
                 return;
             }
 

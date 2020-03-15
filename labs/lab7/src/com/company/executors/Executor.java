@@ -76,7 +76,7 @@ abstract public class Executor {
      * @param field_names - the field names want a user to input
      * @return map that maps the field names to value or null if they want to go back to main menu
      */
-    protected static HashMap<String, String> getFields(List<String> field_names, Validator validator, File debug)
+    protected static HashMap<String, String> getFields(List<String> field_names, Validator validator)
         throws Exception
     {
         int counter=0;
@@ -84,10 +84,9 @@ abstract public class Executor {
         validator.setFields(field_names);
         validator.setFieldsValues(fields);
         String value;
-        Scanner scanner= new Scanner(debug);
         while(counter < field_names.size()){
             System.out.println("input " + field_names.get(counter) + "(c - return to main menu): ");
-            if((value = scanner.next()).equals( "c")){
+            if((value = new Scanner(System.in).next()).equals( "c")){
                 return null;
             }
             // check to see if a field is valid

@@ -61,7 +61,7 @@ public class FR3Executor extends Executor {
 
             /** Step 3 - get user data inputted on what they what they want to change **/
             System.out.println("If you don't want change in one of the fields type: no");
-            if((field_values = getFields(fields, validator, new File("tests/FR3")))==null){
+            if((field_values = getFields(fields, validator))==null){
                 return;
             }
             rate = getRate(field_values, fields, data);
